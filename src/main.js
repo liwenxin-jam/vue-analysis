@@ -16,6 +16,13 @@ import Vue from "vue"; //默认module引入的是run-time, 没有编辑的
 
 var app = new Vue({
   el: '#app',
+  // render(createElement) {
+  //   return createElement('div', {
+  //     attrs: {
+  //       id: 'app'
+  //     }
+  //   }, this.message)
+  // },
   data() {
     return {
       message: 'Hello Vue!'

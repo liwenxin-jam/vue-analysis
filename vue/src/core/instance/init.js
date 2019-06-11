@@ -42,6 +42,7 @@ export function initMixin (Vue: Class<Component>) {
       )
     }
     /* istanbul ignore else */
+    // 不管是什么环境，_renderProxy指向vm
     if (process.env.NODE_ENV !== 'production') {
       initProxy(vm)
     } else {

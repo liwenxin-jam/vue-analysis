@@ -56,6 +56,7 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  // 生成真实dom，视图改变也会调用_update，实现数据更新
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
@@ -66,9 +67,12 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
+      // platform/runtime/init.js ,判断是否是浏览器环境，如果是返回path, 不是返回noop空函数
+      // 首次渲染，el真实dom，vnode虚拟dom
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // updates
+      // 更新数据
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
@@ -145,6 +149,7 @@ export function mountComponent (
 ): Component {
   vm.$el = el
   if (!vm.$options.render) {
+    // 没有render，创建一个空VNode节点，并抛出警告
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
       /* istanbul ignore if */
@@ -169,6 +174,7 @@ export function mountComponent (
   let updateComponent
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+    // 性能埋点，为了检测组件更新的时间，当觉得页面卡顿，可以考虑观察performance
     updateComponent = () => {
       const name = vm._name
       const id = vm._uid
@@ -187,6 +193,8 @@ export function mountComponent (
     }
   } else {
     updateComponent = () => {
+      // 先调用的是render.js里的_render方法，然后内部调用的是create-element.js的createElement方法生成虚拟节点
+      // 最后通过_update生成真实dom
       vm._update(vm._render(), hydrating)
     }
   }
@@ -194,6 +202,7 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+  // 观察者模式，isRenderWatcher渲染watch的标识符
   new Watcher(vm, updateComponent, noop, {
     before () {
       if (vm._isMounted && !vm._isDestroyed) {

@@ -14,6 +14,7 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
+// 把不需要编译版本mount方法保存起来，覆盖需要编译版本的mount方法
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
@@ -21,6 +22,9 @@ Vue.prototype.$mount = function (
 ): Component {
   el = el && query(el)
 
+  debugger
+
+  // el不允许是根节点，例如html和body，因为会覆盖其它相关的依赖引入
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
@@ -30,6 +34,7 @@ Vue.prototype.$mount = function (
   }
 
   const options = this.$options
+  // 如果没有render方法，先把template转成render函数
   // resolve template/el and convert to render function
   if (!options.render) {
     let template = options.template
@@ -54,6 +59,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      // 没有模板直接输出div的html结构
       template = getOuterHTML(el)
     }
     if (template) {
@@ -79,6 +85,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 调用上边缓存起来的原型方法，不需要编译的mount方法
   return mount.call(this, el, hydrating)
 }
 
@@ -87,6 +94,7 @@ Vue.prototype.$mount = function (
  * of SVG elements in IE as well.
  */
 function getOuterHTML (el: Element): string {
+  // 获取描述元素（包括其后代）的序列化HTML片段。它也可以设置为用从给定字符串解析的节点替换元素。
   if (el.outerHTML) {
     return el.outerHTML
   } else {
