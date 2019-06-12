@@ -109,10 +109,12 @@ export function createComponent (
     return
   }
 
+  // 在core/global-api/index.js中由Vue.options._base = Vue定义，然后在core/instance.init.js中initMixin合并Options
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
   if (isObject(Ctor)) {
+    // 如果是传入的ctor是一个对象，通用vue.extend转成新的构造器
     Ctor = baseCtor.extend(Ctor)
   }
 
@@ -183,6 +185,7 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
+  // 安装组件的勾子
   installComponentHooks(data)
 
   // return a placeholder vnode
@@ -223,7 +226,8 @@ export function createComponentInstanceForVnode (
   return new vnode.componentOptions.Ctor(options)
 }
 
-function installComponentHooks (data: VNodeData) {
+// 剃归merge
+function installComponenttHooks (data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]

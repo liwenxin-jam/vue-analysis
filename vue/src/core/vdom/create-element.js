@@ -42,7 +42,7 @@ export function createElement (
   if (isTrue(alwaysNormalize)) {
     normalizationType = ALWAYS_NORMALIZE
   }
-  // 封装参数，调用真用的函数生成VNode
+  // 封装参数，调用真正的函数_createElement生成VNode
   return _createElement(context, tag, data, children, normalizationType)
 }
 
@@ -122,6 +122,7 @@ export function _createElement (
     }
   } else {
     // direct component options / constructor
+    // 例如 render(h) { h(App) } 单独引入vue文件
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

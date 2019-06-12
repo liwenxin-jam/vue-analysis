@@ -276,6 +276,7 @@ function checkComponents (options: Object) {
   }
 }
 
+// 组件名必须是字母开头，不能是浏览器原生标签，例如header之类
 export function validateComponentName (name: string) {
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
