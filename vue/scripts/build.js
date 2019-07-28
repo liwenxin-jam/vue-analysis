@@ -4,14 +4,15 @@ const zlib = require('zlib')
 const rollup = require('rollup')
 const terser = require('terser')
 
+// 判断文件夹是否存在，不存在创建dist文件夹
 if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
 }
 
 let builds = require('./config').getAllBuilds()
 
-// filter builds via command line arg
-if (process.argv[2]) {
+// filter builds via command line arg  过滤掉不需要的参数 
+if (process.argv[2]) { // 获取脚本参数，例如 npm run build -- weex , process.argv[2] 等于 weex
   const filters = process.argv[2].split(',')
   builds = builds.filter(b => {
     return filters.some(f => b.output.file.indexOf(f) > -1 || b._name.indexOf(f) > -1)
