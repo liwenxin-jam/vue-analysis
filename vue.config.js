@@ -9,7 +9,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        'vue$': 'vue/dist/vue.esm.js', // 指定需要编译版本的，第三种方式 ，调试指定vue入口文件
+        'vue$': 'vue/dist/vue.esm.js', // 指定需要编译版本的，调试指定vue入口文件，第三种方式
         '@': resolve('src')
       }
     }
