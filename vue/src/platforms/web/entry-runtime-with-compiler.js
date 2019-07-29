@@ -1,5 +1,5 @@
 /* @flow */
-
+// 带编译版本的入口文件，不带编译版本的入口文件是entry-runtime.js
 import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
@@ -21,8 +21,6 @@ Vue.prototype.$mount = function (
   hydrating?: boolean
 ): Component {
   el = el && query(el)
-
-  debugger
 
   // el不允许是根节点，例如html和body，因为会覆盖其它相关的依赖引入
   /* istanbul ignore if */
