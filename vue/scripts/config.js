@@ -35,7 +35,6 @@ const resolve = p => {
   }
 }
 
-// 构建编译版本对应关系
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
@@ -214,7 +213,6 @@ const builds = {
   }
 }
 
-// 生成rollup打包构建的配置
 function genConfig (name) {
   const opts = builds[name]
   const config = {

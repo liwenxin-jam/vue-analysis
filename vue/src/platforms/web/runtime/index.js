@@ -31,10 +31,9 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
-// 判断是否是浏览器环境，如果是返回path, 不是返回noop空函数
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
-// public mount method，提供给需要编译版本和不需要编译版本使用
+// public mount method
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean

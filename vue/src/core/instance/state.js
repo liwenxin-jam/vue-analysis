@@ -35,9 +35,7 @@ const sharedPropertyDefinition = {
   set: noop
 }
 
-// 代理映射 sourceKey === _data
 export function proxy (target: Object, sourceKey: string, key: string) {
-  // 访问 vm.message = vm._data.message
   sharedPropertyDefinition.get = function proxyGetter () {
     return this[sourceKey][key]
   }
@@ -50,11 +48,8 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
-  // 初始化props
   if (opts.props) initProps(vm, opts.props)
-  // 初始化methods
   if (opts.methods) initMethods(vm, opts.methods)
-  // 初始化data
   if (opts.data) {
     initData(vm)
   } else {
@@ -119,7 +114,6 @@ function initData (vm: Component) {
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
-  // 如果开发环境data不是一个方法，给个警告
   if (!isPlainObject(data)) {
     data = {}
     process.env.NODE_ENV !== 'production' && warn(
@@ -135,7 +129,6 @@ function initData (vm: Component) {
   let i = keys.length
   while (i--) {
     const key = keys[i]
-    // 方法名不能与data属性同名
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -144,7 +137,6 @@ function initData (vm: Component) {
         )
       }
     }
-    // props接收不能与data属性同名
     if (props && hasOwn(props, key)) {
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +
@@ -152,11 +144,10 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
-      // 代理反射，访问this.message 其实就相当于 是this._data.message
       proxy(vm, `_data`, key)
     }
   }
-  // observe data 响应式处理
+  // observe data
   observe(data, true /* asRootData */)
 }
 

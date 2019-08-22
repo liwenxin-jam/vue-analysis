@@ -35,7 +35,6 @@ import {
 // inline hooks to be invoked on component VNodes during patch
 const componentVNodeHooks = {
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
-    // keepAlive
     if (
       vnode.componentInstance &&
       !vnode.componentInstance._isDestroyed &&
@@ -45,7 +44,6 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
-      // 返回vm实例
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
@@ -111,12 +109,10 @@ export function createComponent (
     return
   }
 
-  // 在core/global-api/index.js中由Vue.options._base = Vue定义，然后在core/instance.init.js中initMixin合并Options
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
   if (isObject(Ctor)) {
-    // 如果是传入的ctor是一个对象，通用vue.extend转成新的构造器
     Ctor = baseCtor.extend(Ctor)
   }
 
@@ -187,7 +183,6 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
-  // 安装组件的勾子
   installComponentHooks(data)
 
   // return a placeholder vnode
@@ -214,10 +209,9 @@ export function createComponentInstanceForVnode (
   vnode: any, // we know it's MountedComponentVNode but flow doesn't
   parent: any, // activeInstance in lifecycle state
 ): Component {
-  // parent实际是vm实例
   const options: InternalComponentOptions = {
     _isComponent: true,
-    _parentVnode: vnode, // 占位符vnode，理解为占位节点
+    _parentVnode: vnode,
     parent
   }
   // check inline-template render functions
@@ -229,8 +223,7 @@ export function createComponentInstanceForVnode (
   return new vnode.componentOptions.Ctor(options)
 }
 
-// 递归 hook 合并merge 包括顶部的init方法
-function installComponenttHooks (data: VNodeData) {
+function installComponentHooks (data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]

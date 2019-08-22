@@ -33,7 +33,6 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
-  // 参数重载，处理参数不一致，第三个参数data可以不传，判断data是一个数组或者是一个基础类型(string、numbel、symbol、boolean)，重新内部赋值
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -42,7 +41,6 @@ export function createElement (
   if (isTrue(alwaysNormalize)) {
     normalizationType = ALWAYS_NORMALIZE
   }
-  // 封装参数，调用真正的函数_createElement生成VNode
   return _createElement(context, tag, data, children, normalizationType)
 }
 
@@ -53,7 +51,6 @@ export function _createElement (
   children?: any,
   normalizationType?: number
 ): VNode | Array<VNode> {
-  // isDef是否有定义，即不等于undefined或null，存在__ob__代表它是一个响应式，vnode不允许是个响应式
   if (isDef(data) && isDef((data: any).__ob__)) {
     process.env.NODE_ENV !== 'production' && warn(
       `Avoid using observed data object as vnode data: ${JSON.stringify(data)}\n` +
@@ -90,7 +87,6 @@ export function _createElement (
     data.scopedSlots = { default: children[0] }
     children.length = 0
   }
-  // 根据枚举类型，决定处理成哪一种一维数组，normalizeChildren是vnode类型的一维数据
   if (normalizationType === ALWAYS_NORMALIZE) {
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
@@ -100,21 +96,25 @@ export function _createElement (
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
-    // 检测是否是保留标签
     if (config.isReservedTag(tag)) {
-      // platform built-in elements t
+      // platform built-in elements
+      if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
+        warn(
+          `The .native modifier for v-on is only valid on components but it was used on <${tag}>.`,
+          context
+        )
+      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component 如果是一个组件就用createComponent创建
+      // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // unknown or unlisted namespaced elements
       // check at runtime because it may get assigned a namespace when its
       // parent normalizes children
-      // 未知的东西，直接生成vnode返回
       vnode = new VNode(
         tag, data, children,
         undefined, undefined, context
@@ -122,7 +122,6 @@ export function _createElement (
     }
   } else {
     // direct component options / constructor
-    // 例如 render(h) { h(App) } 单独引入vue文件
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

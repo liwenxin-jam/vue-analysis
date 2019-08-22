@@ -28,13 +28,12 @@ if (process.env.NODE_ENV !== 'production') {
     warn(
       `Property "${key}" must be accessed with "$data.${key}" because ` +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals' +
+      'prevent conflicts with Vue internals. ' +
       'See: https://vuejs.org/v2/api/#data',
       target
     )
   }
 
-  // 判断原生浏览器是否支持proxy
   const hasProxy =
     typeof Proxy !== 'undefined' && isNative(Proxy)
 
@@ -56,13 +55,11 @@ if (process.env.NODE_ENV !== 'production') {
   const hasHandler = {
     has (target, key) {
       const has = key in target
-      // 是否是浏览器允许的内置全局方法 或者是_下划线开头的
       const isAllowed = allowedGlobals(key) ||
         (typeof key === 'string' && key.charAt(0) === '_' && !(key in target.$data))
       if (!has && !isAllowed) {
-        // 名字以 _ 或 $开始的属性不会被 Vue 实例代理，因为它们可能与 Vue 的内置属性与 API 方法冲突
         if (key in target.$data) warnReservedPrefix(target, key)
-        else warnNonPresent(target, key) // 当在模板或者render中使用了某个key，但又没有在data定义抛出错误 
+        else warnNonPresent(target, key)
       }
       return has || !isAllowed
     }

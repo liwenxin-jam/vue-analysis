@@ -21,22 +21,18 @@ export function initExtend (Vue: GlobalAPI) {
     const Super = this
     const SuperId = Super.cid
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
-    // 缓存优化
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
 
-    // 检验组件名
     const name = extendOptions.name || Super.options.name
     if (process.env.NODE_ENV !== 'production' && name) {
       validateComponentName(name)
     }
 
-    // 定义子级构造函数
     const Sub = function VueComponent (options) {
       this._init(options)
     }
-    // 子的构造器原型指向父的原型，原型继承
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++

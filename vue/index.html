@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vue源码调试</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>
+      {{name}}
+    </h1>
+    <Todos></Todos>
+  </div>
+
+  <template id="hello">
+    <div>
+      <h1>{{ques}}</h1>
+      <div>
+        <input type="text" v-model="val">
+        <button @click="addTodo">添加</button>
+      </div>
+      <ul>
+        <li v-for="todo in todos">{{todo}}</li>
+      </ul>
+    </div>
+  </template>
+
+  <script src="./dist/vue.js"></script>
+  <script>
+    let Todos = {
+      data() {
+        return {
+          val: '',
+          todos: ['吃饭', '睡觉', '打扑克'],
+          ques: '扑克是谁'
+        }
+      },
+      template: '#hello',
+      methods: {
+        addTodo() {
+          if (this.val) {
+            this.todos.push(this.val);
+            this.val = '';
+          }
+        }
+      }
+    };
+
+    new Vue({
+      components: {
+        Todos
+      },
+      data: {
+        name: 'xxlai'
+      }
+    }).$mount('#app');
+  </script>
+</body>
+
+</html>

@@ -31,18 +31,8 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
   <tbody>
     <tr>
       <td align="center" valign="middle">
-        <a href="https://moduscreate.com/?utm_source=Vue&utm_medium=Partnership&utm_campaign=VueShip" target="_blank">
-          <img width="222px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/modus.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
         <a href="https://bit.dev/?utm_source=vue&utm_medium=vue&utm_campaign=vue&utm_term=vue&utm_content=vue" target="_blank">
           <img width="222px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/bit.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="http://tooltwist.com/" target="_blank">
-          <img width="222px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/tooltwist.png">
         </a>
       </td>
       <td align="center" valign="middle">
@@ -50,8 +40,6 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
           <img width="222px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/vueschool.png">
         </a>
       </td>
-    </tr><tr></tr>
-    <tr>
       <td align="center" valign="middle">
         <a href="https://vehikl.com/" target="_blank">
           <img width="222px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/vehikl.png">
@@ -115,7 +103,7 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
       </td>
       <td align="center" valign="middle">
         <a href="https://www.frontenddeveloperlove.com/" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/frontend_love.png">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/frontendlove.png">
         </a>
       </td>
       <td align="center" valign="middle">
@@ -141,22 +129,10 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
         </a>
       </td>
       <td align="center" valign="middle">
-        <a href="https://www.valuecoders.com" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/valuecoders.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
         <a href="https://tidelift.com/subscription/npm/vue" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/tidelift.png">
         </a>
       </td>
-      <td align="center" valign="middle">
-        <a href="http://www.syncfusion.com/?utm_source=vuejs&utm_medium=list&utm_campaign=vuejsjslistcy19" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/syncfusion.png">
-        </a>
-      </td>
-    </tr><tr></tr>
-    <tr>
       <td align="center" valign="middle">
         <a href="https://opteo.com/vue" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/opteo.png">
@@ -167,6 +143,8 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/devsquad.png">
         </a>
       </td>
+    </tr><tr></tr>
+    <tr>
       <td align="center" valign="middle">
         <a href="https://www.firesticktricks.com/" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/firestick_tricks.png">
@@ -178,25 +156,13 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
         </a>
       </td>
       <td align="center" valign="middle">
-        <a href="https://isleofcode.com/" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/isle_of_code.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
         <a href="https://passionatepeople.io/" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/passionate_people.png">
         </a>
       </td>
-    </tr><tr></tr>
-    <tr>
       <td align="center" valign="middle">
         <a href="http://en.shopware.com/" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/shopware_ag.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://x-team.com/join/?utm_source=vuejsorg&utm_medium=sponsor&utm_campaign=vuejsorg-patreon" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/x_team.png">
         </a>
       </td>
       <td align="center" valign="middle">
@@ -209,9 +175,16 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/energy_comparison.png">
         </a>
       </td>
+    </tr><tr></tr>
+    <tr>
       <td align="center" valign="middle">
         <a href="https://www.bacancytechnology.com" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/bacancy_technology.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://www.bestvpn.co/" target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/bestvpn_co.png">
         </a>
       </td>
       <td align="center" valign="middle">
@@ -219,16 +192,36 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/blokt_cryptocurrency_news.png">
         </a>
       </td>
-    </tr><tr></tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://www.jqwidgets.com/vue/" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/jqwidgets_ltd.png">
-        </a>
-      </td>
       <td align="center" valign="middle">
         <a href="https://www.y8.com/" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/y8.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://js.devexpress.com/" target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/devexpress.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://fastcoding.jp/javascript/ " target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/fastcoding_inc.svg">
+        </a>
+      </td>
+    </tr><tr></tr>
+    <tr>
+      <td align="center" valign="middle">
+        <a href="https://usave.co.uk/utilities/broadband" target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/usave.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://www.dailynow.co/" target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/daily.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://storekit.com" target="_blank">
+          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/storekit.png">
         </a>
       </td>
     </tr><tr></tr>
@@ -280,11 +273,6 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="middle">
-        <a href="http://tighten.co/" target="_blank">
-          <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/tighten_co.png">
-        </a>
-      </td>
       <td align="center" valign="middle">
         <a href="https://www.accelebrate.com/" target="_blank">
           <img width="148px" src="https://raw.githubusercontent.com/vuejs/vuejs.org/master/themes/vue/source/images/accelebrate.png">
@@ -346,10 +334,9 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
 - Alex Balashov
 - Konstantin Levinski
 - Blaise Laflamme
-- Dilettant
 - Sean Ferguson
 - Johnny Ray Austin
-- IdealCoders
+- Daniel
 <!--50 end-->
 
 <h2 align="center">Backers via Patreon</h2>
@@ -359,113 +346,88 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
 - Shawn Wildermuth
 - Samuel Smith
 - donny
-- Simon East
-- Keisuke Kita
-- kazupon
-- Sean Washington
 - Lars Andreas Ness
+- Sean Washington
+- Keisuke Kita
 - Benjamin Listwon
 - Kirk Lewis
 - Stephen Michael Hartley
-- Victor Tolbert
 - Wen-Tien Chang
-- Karol
+- Victor Tolbert
 - Phan An
 - James J. Ye
 - Barbara Liau
 - Luiz
 - Matsumoto Takamasa
-- Jarek Tkaczyk
+- Guy Gavergun
+- Duncan Kenzie
 - Niannian Modisette
 - Matt Jones
-- Duncan Kenzie
-- Guy Gavergun
-- Shinya Katayama
-- Mike Margerum
 - Bernhard E. Reiter
-- Chengzhi Yin
 - Zoran Knezevic
 - Jon Hobbs-Smith
 - Pierre Vanhulst
-- Akiho Nagao
 - Haim Yulzari
 - Asaf Yishai
 - Anthony Estebe
+- Akiho Nagao
 - Jeremy Tan
 - Jim Raden
 - IMGNRY
-- Tai Shi Ling
-- Yong Jun Thong
 - Tyler
-- Vivekanandhan Natarajan
-- Matias Verdier
-- Rafael Belvederese
-- Chih-Hsuan Fan
 - Guilherme S L de Souza
 - Daniel Waghorn
-- Rob Yedlin
 - Mickaël Andrieu
-- Jamie McElwain
+- Vivekanandhan Natarajan
+- Rob Yedlin
+- Rafael Belvederese
 - Jordan Oroshiba
-- Cliff Hess
 - Joe Gregory
-- Richard Simpson
 - Marcos Moura
 - Jessie Hernandez
-- Ivan Sieder
 - Eric
-- Aparajita Fishman
+- Ivan Sieder
+- Christo Crampton
 - Romain Lienard
 - Bohdan Kokotko
-- Christo Crampton
-- David Ang
 - Donald Fischer
-- Alexander Weiher
 - Oskar Lindgren
-- Jere Sjöroos
+- Alexander Weiher
+- David Ang
 - Wakana Seki
-- David Kaplan
+- Jere Sjöroos
 - Ben Hong
+- David Kaplan
 - Domenico Gaudioso
 - Jaeyoung Lee
 - Andy
-- Joe Cochran
 - Matt Sencenbaugh
-- Juan Bermudez
+- Shapovalov Pavel
 - Hannes Kochniß
-- Colt Borg
-- Alberto T. Payero Mota
 - Daniel Mattingley
-- Teon Ooi
-- Chris Calo
 - Elon Hung
+- Chris Calo
+- Juan Bermudez
 - Soichiro Isshiki
-- Milan Zivkovic
-- Christopher Bemister
 - Ed Linklater
 - Garion Herman
-- Marko Boskovic
-- Rob
-- Andrew Willis
-- Yusuke Kawabata
 - Princeyesuraj Edward
-- shimbaco
+- Yusuke Kawabata
 - 龙腾道
-- 极 蔡
 - Peter Matkovsky
 - Nick Dandakis
 - Fabien GuySake Ungerer
-- Fedor Indutny
-- Masato Miura
 - Nathan Mallison
-- Shapovalov Pavel
-- David McGuigan
-- Max Fletcher
 - Bill Condo
-- Kevin Batdorf
-- Ivan Buncic
+- Kenneth Crawford
 - Pierre Lebrun
-- Sheree Peña
+- John Thompson
+- Martin Bastien
+- Ryan Brewer
+- Merott Movahedi
+- Bichinger Software & Consulting
+- Alfonso Herrera
+- Abhay
 <!--10 end-->
 
 <h2 align="center">Backers via OpenCollective</h2>

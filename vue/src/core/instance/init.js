@@ -35,7 +35,6 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
-      // 合并options
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -43,7 +42,6 @@ export function initMixin (Vue: Class<Component>) {
       )
     }
     /* istanbul ignore else */
-    // 不管是什么环境，_renderProxy指向vm
     if (process.env.NODE_ENV !== 'production') {
       initProxy(vm)
     } else {
@@ -51,7 +49,6 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    // 初始化
     initLifecycle(vm)
     initEvents(vm)
     initRender(vm)
@@ -68,7 +65,6 @@ export function initMixin (Vue: Class<Component>) {
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
 
-    // 根据提供的el，来帮你挂载，也可以自己手动挂载.$mount("#app")
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }
