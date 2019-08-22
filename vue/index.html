@@ -54,8 +54,15 @@
       components: {
         Todos
       },
-      data: {
-        name: 'xxlai'
+      data() {
+        return {
+          name: 'xxlai'
+        }
+      },
+      mounted() {
+        // _开头，默认是私有属性，不建议直接访问
+        // console.log(this._data.name)
+        console.log(this.name)
       }
     }).$mount('#app');
   </script>

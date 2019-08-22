@@ -19,7 +19,7 @@ import {
   noop,
   hasOwn,
   hyphenate,
-  isReserved,
+  isReserved, // Check if a string starts with $ or _
   handleError,
   nativeWatch,
   validateProp,
@@ -35,6 +35,7 @@ const sharedPropertyDefinition = {
   set: noop
 }
 
+// 代理，sourceKey指代的是_data
 export function proxy (target: Object, sourceKey: string, key: string) {
   sharedPropertyDefinition.get = function proxyGetter () {
     return this[sourceKey][key]
@@ -111,6 +112,7 @@ function initProps (vm: Component, propsOptions: Object) {
 
 function initData (vm: Component) {
   let data = vm.$options.data
+  // 初始化，将data放在_data中
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
