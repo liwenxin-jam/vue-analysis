@@ -27,6 +27,8 @@ const weexFactoryPlugin = {
 
 const aliases = require('./alias')
 const resolve = p => {
+  // 例如将web/entry-runtime-with-compiler.js分成两部分，在alias查找是否有对应的key，如web
+  // 假设查找不到base，就往上级目录查找对应文件夹，如dist
   const base = p.split('/')[0]
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))

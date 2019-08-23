@@ -1,5 +1,14 @@
 /* @flow */
 
+/**
+ * 该文件编译出 vue.js
+ * 包含runtime+compile
+ * 1. 引入runtime版本vue
+ * 2. 引入compile相关
+ * 3. 将compile相关操作加入到runtime版本vue的$mount处理方法中
+ * 4. 增加Vue.compile静态方法
+ */
+
 import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
