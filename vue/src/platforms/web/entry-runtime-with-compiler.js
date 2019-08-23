@@ -13,16 +13,24 @@ import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
 
+// 引入runtime版的vue构造函数
 import Vue from './runtime/index'
 import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'
 import { shouldDecodeNewlines, shouldDecodeNewlinesForHref } from './util/compat'
 
+// 根据id获取innerHTML,如果有缓存就直接取缓存的
 const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
 
+// 设置$mount原型链方法
+// 对runtime版本$mount做处理
+// 增加了对template的编译操作
+// 处理过程:
+// 装载的对象如果有render方法， 说明是预编译的，只需要runtime的处理
+// 如果没有render方法，就需要compile, 将模板转化为render方法
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
@@ -30,6 +38,7 @@ Vue.prototype.$mount = function (
 ): Component {
   el = el && query(el)
 
+  // 开发环境下提示： el元素不能是body和html
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
@@ -39,12 +48,16 @@ Vue.prototype.$mount = function (
   }
 
   const options = this.$options
+  // 没有render方法，则需要compile处理
   // resolve template/el and convert to render function
   if (!options.render) {
     let template = options.template
+    // 指定template的情况
     if (template) {
       if (typeof template === 'string') {
+        // 处理由<script>标签引入template的情况
         if (template.charAt(0) === '#') {
+          // 取得script标签的innerHTML
           template = idToTemplate(template)
           /* istanbul ignore if */
           if (process.env.NODE_ENV !== 'production' && !template) {
@@ -55,6 +68,7 @@ Vue.prototype.$mount = function (
           }
         }
       } else if (template.nodeType) {
+        // template是一个dom元素，直接取它的innerHTML
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -63,6 +77,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      // 未指定template， 取el的outerHtml
       template = getOuterHTML(el)
     }
     if (template) {
@@ -71,6 +86,7 @@ Vue.prototype.$mount = function (
         mark('compile')
       }
 
+      // 将模板编译(compile)成render函数, 并且赋值给options.render
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -88,9 +104,11 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 调用
   return mount.call(this, el, hydrating)
 }
 
+// 获取元素outerHTML
 /**
  * Get outerHTML of elements, taking care
  * of SVG elements in IE as well.

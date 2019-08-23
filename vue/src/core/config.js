@@ -1,4 +1,7 @@
 /* @flow */
+// flow: https://flow.org/en/docs/lang/
+// 是一款静态类型检测工具
+// @flow是告诉flow该文件需要做静态类型检测, 做flow测试时使用
 
 import {
   no,
@@ -58,6 +61,7 @@ export default ({
   devtools: process.env.NODE_ENV !== 'production',
 
   /**
+   * 是否做性能报告
    * Whether to record perf
    */
   performance: false,
