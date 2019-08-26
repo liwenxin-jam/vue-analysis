@@ -1,5 +1,14 @@
 /* @flow */
 
+/**
+ * 生命周期模块
+ * 导出:
+ *   * lifecycleMixin: Vue.prototype的生命周期包装函数
+ *   * initLifecycle: vue实例的生命周期包装函数
+ *   * callHook: 生命周期调用方法
+ *   * mountComponent: 提供vue.prototype.$mount
+ */
+
 import config from '../config'
 import Watcher from '../observer/watcher'
 import { mark, measure } from '../util/perf'
@@ -18,6 +27,7 @@ import {
   invokeWithErrorHandling
 } from '../util/index'
 
+// 正在进行操作的vm实例, 属于公共资源
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
@@ -29,9 +39,12 @@ export function setActiveInstance(vm: Component) {
   }
 }
 
+// 添加vue实例私有对象和属性
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
+  // 取得第一个非abstract类型的parent实例, 将当前实例加入到parent的$children数组中
+  // locate first non-abstract parent
   // locate first non-abstract parent
   let parent = options.parent
   if (parent && !options.abstract) {
@@ -41,27 +54,42 @@ export function initLifecycle (vm: Component) {
     parent.$children.push(vm)
   }
 
+  // 设置$parent
   vm.$parent = parent
+
+  // $root设为最外层的vm对象实例
+  // 取parent的$root属性， 若没有parent则自己就是最外层，取当前实例
   vm.$root = parent ? parent.$root : vm
 
+  // 存储子组件的数组
   vm.$children = []
+
   vm.$refs = {}
 
+  // 组件相关生命周期状态设置初始值
   vm._watcher = null
   vm._inactive = null
   vm._directInactive = false
+
+  // 是否已经加载
   vm._isMounted = false
+  // 是否已经被卸载
   vm._isDestroyed = false
+  // 是否正在被卸载, 因为有异步处理
   vm._isBeingDestroyed = false
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  // 组件更新操作
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
     vm._vnode = vnode
+
+    // 对比更新
+    // vm.__patch__方法在入口文件中定义，根据渲染平台的不同而有不同的实现
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
@@ -87,25 +115,40 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // updated in a parent's updated hook.
   }
 
+  // 强制更新操作
   Vue.prototype.$forceUpdate = function () {
     const vm: Component = this
     if (vm._watcher) {
+      // 实际执行的实例watcher的update方法
       vm._watcher.update()
     }
   }
 
+  // vue实例销毁函数
   Vue.prototype.$destroy = function () {
     const vm: Component = this
+
+    // 防止重复执行
     if (vm._isBeingDestroyed) {
       return
     }
+
+    // 调用beforeDestroy的钩子
     callHook(vm, 'beforeDestroy')
+
+    // 设置正在销毁tag
     vm._isBeingDestroyed = true
+
+    // 将实例从父组件中移除
+    // 从父组件$children数组中移除
+    // 实例不能使abstract类型, 且有父组件存在
     // remove self from parent
     const parent = vm.$parent
     if (parent && !parent._isBeingDestroyed && !vm.$options.abstract) {
       remove(parent.$children, vm)
     }
+
+    // 卸载watcher
     // teardown watchers
     if (vm._watcher) {
       vm._watcher.teardown()
@@ -119,14 +162,22 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (vm._data.__ob__) {
       vm._data.__ob__.vmCount--
     }
+
+    // 设置标志位，是否已经卸载
     // call the last hook...
     vm._isDestroyed = true
+
     // invoke destroy hooks on current rendered tree
     vm.__patch__(vm._vnode, null)
+
+    // 调用destroyed钩子
     // fire destroyed hook
     callHook(vm, 'destroyed')
+
+    // 解绑所有事件监听
     // turn off all instance listeners.
     vm.$off()
+
     // remove __vue__ reference
     if (vm.$el) {
       vm.$el.__vue__ = null
@@ -138,12 +189,19 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
+// 对外导出的装载函数
+// 只有runtime的vue才打包该函数作为vm.$mount
 export function mountComponent (
   vm: Component,
   el: ?Element,
   hydrating?: boolean
 ): Component {
+  // $el设为装载元素
   vm.$el = el
+
+  // 如果options中没有设置render方法，则render指定为createEmptyVNode
+  // render函数肯定会有，预编译的编译好后就有render, 非预编译的$mount装载时compile成render
+  // 除非实时编译的，却引入了runtime版本的vue, 则在开发环境下作提示
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -164,8 +222,11 @@ export function mountComponent (
       }
     }
   }
+
+  // 调用beforeMount钩子
   callHook(vm, 'beforeMount')
 
+  // 测试环境会在update前后输出一系列console, 所以与生产环境updateComponent设置不同
   let updateComponent
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
@@ -186,11 +247,15 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    // 设置更新组件函数
     updateComponent = () => {
+      // vm._render() 拿到最新的VNode
+      // update 进行具体的patch操作
       vm._update(vm._render(), hydrating)
     }
   }
 
+  // 对实例开启watcher
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
@@ -206,7 +271,9 @@ export function mountComponent (
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
+    // 设置已装载标志位
     vm._isMounted = true
+    // 调用已装载钩子
     callHook(vm, 'mounted')
   }
   return vm
@@ -299,6 +366,7 @@ function isInInactiveTree (vm) {
   return false
 }
 
+// 向外提供调用组件activated钩子
 export function activateChildComponent (vm: Component, direct?: boolean) {
   if (direct) {
     vm._directInactive = false
@@ -317,6 +385,7 @@ export function activateChildComponent (vm: Component, direct?: boolean) {
   }
 }
 
+// 向外提供调用组件deactivated钩子
 export function deactivateChildComponent (vm: Component, direct?: boolean) {
   if (direct) {
     vm._directInactive = true
@@ -333,16 +402,23 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
   }
 }
 
+// 生命周期调用方法
+// @param vm 组件
+// @param hook 调用的生命周期名称
+// 生命周期方法都存于组件的$options中
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()
+  // 从$options中拿到指定的句柄
   const handlers = vm.$options[hook]
   const info = `${hook} hook`
+  // 循环执行周期函数句柄, options[lifecycleName]是一个数组
   if (handlers) {
     for (let i = 0, j = handlers.length; i < j; i++) {
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }
   }
+  // 如果有钩子事件则执行钩子事件
   if (vm._hasHookEvent) {
     vm.$emit('hook:' + hook)
   }

@@ -1,5 +1,12 @@
 /* @flow */
 
+/**
+ * render模块
+ * 导出:
+ *   * renderMixin: Vue.prototype的包装函数
+ *   * initRender: vue实例的包装函数
+ */
+
 import {
   warn,
   nextTick,
@@ -16,6 +23,7 @@ import VNode, { createEmptyVNode } from '../vdom/vnode'
 
 import { isUpdatingChildComponent } from './lifecycle'
 
+// vue实例初始化时，有关render模块的一系列处理
 export function initRender (vm: Component) {
   vm._vnode = null // the root of the child tree
   vm._staticTrees = null // v-once cached trees
@@ -58,6 +66,10 @@ export function setCurrentRenderingInstance (vm: Component) {
   currentRenderingInstance = vm
 }
 
+// Vue原型链增加一系列方法
+// $nextTick: util中实现的promise队列
+// _render
+// 其它内部方法
 export function renderMixin (Vue: Class<Component>) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)

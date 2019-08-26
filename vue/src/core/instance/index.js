@@ -8,6 +8,7 @@
  * 	* render: 渲染相关
  * 3. 导出Vue构造函数
  */
+
 // 引入实例相关各模块
 import { initMixin } from './init'
 import { stateMixin } from './state'
