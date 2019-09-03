@@ -34,6 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
     )
   }
 
+  // 原生是否存在且支持Proxy代理
   const hasProxy =
     typeof Proxy !== 'undefined' && isNative(Proxy)
 
@@ -55,9 +56,12 @@ if (process.env.NODE_ENV !== 'production') {
   const hasHandler = {
     has (target, key) {
       const has = key in target
+      // allowedGlobals是否是一个全局定义的key
       const isAllowed = allowedGlobals(key) ||
         (typeof key === 'string' && key.charAt(0) === '_' && !(key in target.$data))
       if (!has && !isAllowed) {
+        // 1、如果是key存在$data中，但是_下划线开头的，提示warnReservedPrefix警告
+        // 2、如果不是_下划线开头，但又没有在data props computed method等相关属性定义，提示warnNonPresent警告
         if (key in target.$data) warnReservedPrefix(target, key)
         else warnNonPresent(target, key)
       }
@@ -79,9 +83,11 @@ if (process.env.NODE_ENV !== 'production') {
     if (hasProxy) {
       // determine which proxy handler to use
       const options = vm.$options
+      // 有render取render，没有则判断模板
       const handlers = options.render && options.render._withStripped
         ? getHandler
         : hasHandler
+      // 对象访问劫持
       vm._renderProxy = new Proxy(vm, handlers)
     } else {
       vm._renderProxy = vm

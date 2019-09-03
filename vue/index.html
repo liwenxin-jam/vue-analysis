@@ -39,7 +39,7 @@
           ques: '扑克是谁'
         }
       },
-      template: '#hello',
+      template: '#hello', // 1、是string类型，需要#号开头 2、是一个dom元素，取outerHTML 3、前两者都没有，通过el去获取或者手动通过$mount('#app')去挂载
       methods: {
         addTodo() {
           if (this.val) {
@@ -59,6 +59,15 @@
           name: 'xxlai'
         }
       },
+      // 有render的时候忽略template直接执行render函数，没有render把template转成render函数再执行
+      // 替换el或者$mount挂载的div(#app)
+      // render(createElement) {
+      //   return createElement('div', {
+      //     attrs: {
+      //       id: 'app'
+      //     }
+      //   }, this.message)
+      // },
       mounted() {
         // _开头，默认是私有属性，不建议直接访问
         // console.log(this._data.name)
