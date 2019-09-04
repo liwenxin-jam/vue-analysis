@@ -32,6 +32,9 @@ declare type VNodeWithData = {
   isRootInsert: boolean;
 };
 
+// https://github.com/snabbdom/snabbdom 基于snabbdom实现virtual dom
+// 这里定义的 VNodeData 类型
+// render 函数 data 类型所有都在这里，createElement 时所有参数可对照如下
 declare interface VNodeData {
   key?: string | number;
   slot?: string;
