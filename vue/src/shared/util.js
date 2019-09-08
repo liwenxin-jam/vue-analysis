@@ -4,6 +4,7 @@ export const emptyObject = Object.freeze({})
 
 // These helpers produce better VM code in JS engines due to their
 // explicitness and function inlining.
+// 是否未定义，或者找不到，是 undefined 或 null
 export function isUndef (v: any): boolean %checks {
   return v === undefined || v === null
 }

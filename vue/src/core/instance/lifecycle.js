@@ -94,9 +94,11 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
+      // 第一次渲染是真实的domvm.$el
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // updates
+      // 第二次再渲染是虚拟dom prevVnode
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
