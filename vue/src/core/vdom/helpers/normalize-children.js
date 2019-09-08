@@ -15,6 +15,8 @@ import { isFalse, isTrue, isDef, isUndef, isPrimitive } from 'shared/util'
 // normalization is needed - if any child is an Array, we flatten the whole
 // thing with Array.prototype.concat. It is guaranteed to be only 1-level deep
 // because functional components already normalize their own children.
+
+// 只遍历一级子节点，把嵌套的数组中数组变成一维数组的vnode
 export function simpleNormalizeChildren (children: any) {
   for (let i = 0; i < children.length; i++) {
     if (Array.isArray(children[i])) {
@@ -29,6 +31,8 @@ export function simpleNormalizeChildren (children: any) {
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
 export function normalizeChildren (children: any): ?Array<VNode> {
+  // 基础类型string number symbol boolean,这里string number创建文本类型
+  // 数组类型递归调用normalizeArrayChildren
   return isPrimitive(children)
     ? [createTextVNode(children)]
     : Array.isArray(children)
@@ -36,10 +40,12 @@ export function normalizeChildren (children: any): ?Array<VNode> {
       : undefined
 }
 
+// 判断当前节点是否有定义，且有text属性，且不是一个空的注释节点
 function isTextNode (node): boolean {
   return isDef(node) && isDef(node.text) && isFalse(node.isComment)
 }
 
+// 递归遍历变成一维数组的vnode
 function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNode> {
   const res = []
   let i, c, lastIndex, last
@@ -52,6 +58,7 @@ function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNo
     if (Array.isArray(c)) {
       if (c.length > 0) {
         c = normalizeArrayChildren(c, `${nestedIndex || ''}_${i}`)
+        // 优化，当前循环数组第一个节点和上一次循环最后一个节点都是文本节点，合并处理
         // merge adjacent text nodes
         if (isTextNode(c[0]) && isTextNode(last)) {
           res[lastIndex] = createTextVNode(last.text + (c[0]: any).text)
@@ -60,12 +67,14 @@ function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNo
         res.push.apply(res, c)
       }
     } else if (isPrimitive(c)) {
+      // 优化，当前循环节点和上一次循环节点都是文本节点，合并处理
       if (isTextNode(last)) {
         // merge adjacent text nodes
         // this is necessary for SSR hydration because text nodes are
         // essentially merged when rendered to HTML strings
         res[lastIndex] = createTextVNode(last.text + c)
       } else if (c !== '') {
+        // 上一次循环的节点不是一个文本节点，当前循环的节点是个基础类型的节点，且不为空，直接push
         // convert primitive to vnode
         res.push(createTextVNode(c))
       }

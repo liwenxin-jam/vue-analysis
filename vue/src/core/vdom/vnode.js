@@ -1,5 +1,10 @@
 /* @flow */
 
+/**
+ * vnode虚拟dom的类定义
+ * VNode实例本质也只是一个简单对象
+ * 以及导出vnode相关几个操作方法:
+ */
 export default class VNode {
   tag: string | void;
   data: VNodeData | void;
@@ -39,9 +44,14 @@ export default class VNode {
     componentOptions?: VNodeComponentOptions,
     asyncFactory?: Function
   ) {
+    // vnode的tag名称
     this.tag = tag
+    // vnode的相关属性,参见: https://cn.vuejs.org/v2/guide/render-function.html#深入data-object参数
     this.data = data
+    // vnode的子节点树， array结构
+    // 参见: https://cn.vuejs.org/v2/guide/render-function.html#createElement-参数
     this.children = children
+    // vnode的文本
     this.text = text
     this.elm = elm
     this.ns = undefined
@@ -56,7 +66,9 @@ export default class VNode {
     this.raw = false
     this.isStatic = false
     this.isRootInsert = true
+    // 是否是空vnode的标记
     this.isComment = false
+    // 是否是通过clone VNode而来
     this.isCloned = false
     this.isOnce = false
     this.asyncFactory = asyncFactory
@@ -71,6 +83,7 @@ export default class VNode {
   }
 }
 
+// 创建空的vnode, 实际上是注释节点
 export const createEmptyVNode = (text: string = '') => {
   const node = new VNode()
   node.text = text
@@ -78,10 +91,12 @@ export const createEmptyVNode = (text: string = '') => {
   return node
 }
 
+// 创建文本vnode, 文本vnode没有tag
 export function createTextVNode (val: string | number) {
   return new VNode(undefined, undefined, undefined, String(val))
 }
 
+// clone一个vnode实例
 // optimized shallow clone
 // used for static nodes and slot nodes because they may be reused across
 // multiple renders, cloning them avoids errors when DOM manipulations rely
@@ -100,6 +115,7 @@ export function cloneVNode (vnode: VNode): VNode {
     vnode.componentOptions,
     vnode.asyncFactory
   )
+  // 同步不能通过构造函数创建实例而建立的属性
   cloned.ns = vnode.ns
   cloned.isStatic = vnode.isStatic
   cloned.key = vnode.key
@@ -108,6 +124,7 @@ export function cloneVNode (vnode: VNode): VNode {
   cloned.fnOptions = vnode.fnOptions
   cloned.fnScopeId = vnode.fnScopeId
   cloned.asyncMeta = vnode.asyncMeta
+  // 通过cloneVNode创建的vnode设置标记位
   cloned.isCloned = true
   return cloned
 }

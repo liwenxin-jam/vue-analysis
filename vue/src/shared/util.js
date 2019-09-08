@@ -8,6 +8,7 @@ export function isUndef (v: any): boolean %checks {
   return v === undefined || v === null
 }
 
+// 是否有定义，非 undefined 或 null
 export function isDef (v: any): boolean %checks {
   return v !== undefined && v !== null
 }
@@ -16,12 +17,14 @@ export function isTrue (v: any): boolean %checks {
   return v === true
 }
 
+// 传入的值是否一个false
 export function isFalse (v: any): boolean %checks {
   return v === false
 }
 
 /**
  * Check if value is primitive.
+ * 检测是否是一个基础类型，例如string number symbol boolean
  */
 export function isPrimitive (value: any): boolean %checks {
   return (
@@ -71,6 +74,7 @@ export function isValidArrayIndex (val: any): boolean {
   return n >= 0 && Math.floor(n) === n && isFinite(val)
 }
 
+//
 export function isPromise (val: any): boolean {
   return (
     isDef(val) &&
@@ -254,11 +258,13 @@ export function toObject (arr: Array<any>): Object {
  * Perform no operation.
  * Stubbing args to make Flow happy without leaving useless transpiled code
  * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
+ * 一个空函数
  */
 export function noop (a?: any, b?: any, c?: any) {}
 
 /**
  * Always return false.
+ * 不管什么情况下的实参都返回false
  */
 export const no = (a?: any, b?: any, c?: any) => false
 
@@ -266,6 +272,7 @@ export const no = (a?: any, b?: any, c?: any) => false
 
 /**
  * Return the same value.
+ * 直接返回实参
  */
 export const identity = (_: any) => _
 
