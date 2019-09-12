@@ -16,25 +16,29 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 
 let uid = 0
 
+// 前端执行new vue时，会调用function vue构造函数
+// vue构造函数会通过initMixin方法在原型上绑字_init方法，最终new的时候就是调用_init去初始化vue
 export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // 为每一个vue实例设置独有的uid, 递增
-    // a uid
+    // 定义一个uid
     vm._uid = uid++
 
     let startTag, endTag
+    // performance设置为 true 以在浏览器开发工具的性能/时间线面板中启用对组件初始化、编译、渲染和打补丁的性能追踪。
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       startTag = `vue-perf-start:${vm._uid}`
       endTag = `vue-perf-end:${vm._uid}`
+      // 创建一个性能标记点
       mark(startTag)
     }
 
     // a flag to avoid this being observed
     vm._isVue = true
-    // 合并options
-    // options._isComponent在vdom中定义，标识是否是组件
+    // 合并options，并且把合并后的options缓存至vm.$options上
+    // options._isComponent在vdom中定义，标识是否是组件，_isComponent为true时为组件
     // 组件执行initInternalComponent
     // 非组件执行mergeOptions->resolveConstructorOptions
     // merge options
@@ -62,40 +66,32 @@ export function initMixin (Vue: Class<Component>) {
     // expose real self
     vm._self = vm
 
-    // 添加实例生命周期方法
-    initLifecycle(vm)
-
-    // 添加事件方法
-    initEvents(vm)
-
-    // 添加render方法
-    initRender(vm)
-
-    // 执行beforeCreate生命周期函数
-    callHook(vm, 'beforeCreate')
-
+    initLifecycle(vm) // 初始化实例生命周期
+    initEvents(vm)  // 初始化events事件
+    initRender(vm) // 初始化render函数
+    // **在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
+    callHook(vm, 'beforeCreate')  // 调用beforeCreate生命周期钩子
     // 依赖注入
     // 参考文档: https://cn.vuejs.org/v2/api/#provide-inject
     // 主要给插件和组件库使用
     initInjections(vm) // resolve injections before data/props
-
-    // 初始化数据相关, data/props
-    initState(vm)
-
+    initState(vm)  // 初始化State （props、methods、data、computed、watch）
     // 同inject
     initProvide(vm) // resolve provide after data/props
+    // **在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：
+    // **数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
+    callHook(vm, 'created') // 调用created生命周期钩子
 
-    // 执行created生命周期函数
-    callHook(vm, 'created')
-
+    /* 计算init函数性能耗时 */
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+      // 获取 component 名字，如果是根name则为 <Root>
       vm._name = formatComponentName(vm, false)
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
 
-    // 如果options中设置了el, 则装载el
+    // 如果options中设置了el, 则调用$mount开始挂载
     // $mount在最外层runtime中定义，根据平台不同有实现区别
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
@@ -103,8 +99,10 @@ export function initMixin (Vue: Class<Component>) {
   }
 }
 
+// 初始化内部组件，合并options
 // 如果实例是一个component, 则执行该方法，设置一系列options
 export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
+  // 通过Object.create创建一个干净的的options，并缓存到vm.$options上
   const opts = vm.$options = Object.create(vm.constructor.options)
   // doing this because it's faster than dynamic enumeration.
   const parentVnode = options._parentVnode
@@ -117,6 +115,7 @@ export function initInternalComponent (vm: Component, options: InternalComponent
   opts._renderChildren = vnodeComponentOptions.children
   opts._componentTag = vnodeComponentOptions.tag
 
+  // 判断是否定义render函数，有则缓存
   if (options.render) {
     opts.render = options.render
     opts.staticRenderFns = options.staticRenderFns

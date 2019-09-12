@@ -49,6 +49,8 @@ extend(Vue.options.components, platformComponents)
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method
+// 公用的 mount 方法
+// 这里runtime和compiler都会共用这部分方法
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean

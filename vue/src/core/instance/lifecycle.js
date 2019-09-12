@@ -27,12 +27,14 @@ import {
   invokeWithErrorHandling
 } from '../util/index'
 
-// 正在进行操作的vm实例, 属于公共资源
+// 正在进行操作的vm实例, 属于公共资源，全局属性
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
 export function setActiveInstance(vm: Component) {
+  // 前一个 vm 实例
   const prevActiveInstance = activeInstance
+  // 当前激活实例为当前 vm
   activeInstance = vm
   return () => {
     activeInstance = prevActiveInstance
@@ -81,24 +83,28 @@ export function initLifecycle (vm: Component) {
 
 export function lifecycleMixin (Vue: Class<Component>) {
   // 组件更新操作
+  // _update方法接收一个VNode，之后通过调用__patch__方法，把VNode渲染成真实的DOM
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
+    // 定义变量为数据改变时调用，首次挂载时为空。
     const prevEl = vm.$el
+    // 前一个 vnode
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
+    // 把 vnode 挂载到 vm._vnode 上
     vm._vnode = vnode
 
-    // 对比更新
-    // vm.__patch__方法在入口文件中定义，根据渲染平台的不同而有不同的实现
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
+    // vm.__patch__方法在入口文件中定义，根据渲染平台的不同而有不同的实现
+    // 对比更新，初次渲染会走到 vm.__patch__ 方法中，这个方法就是比对虚拟 DOM ，局部更新 DOM 的方法
     if (!prevVnode) {
       // initial render
-      // 第一次渲染是真实的domvm.$el
+      // 初始化渲染 第一次渲染是真实的dom vm.$el
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // updates
-      // 第二次再渲染是虚拟dom prevVnode
+      // 更新渲染 第二次再渲染是虚拟dom prevVnode
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
@@ -135,7 +141,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       return
     }
 
-    // 调用beforeDestroy的钩子
+    // 调用beforeDestroy的钩子，先父后子
     callHook(vm, 'beforeDestroy')
 
     // 设置正在销毁tag
@@ -170,10 +176,11 @@ export function lifecycleMixin (Vue: Class<Component>) {
     vm._isDestroyed = true
 
     // invoke destroy hooks on current rendered tree
+    // 执行子组件的销毁工作，递归完成子组件销毁
     vm.__patch__(vm._vnode, null)
 
-    // 调用destroyed钩子
     // fire destroyed hook
+    // 调用destroyed钩子 先子后父
     callHook(vm, 'destroyed')
 
     // 解绑所有事件监听
@@ -191,7 +198,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
-// 对外导出的装载函数
+// vue最终通过mountComponent去挂载，对外导出的装载函数
 // 只有runtime的vue才打包该函数作为vm.$mount
 export function mountComponent (
   vm: Component,
@@ -207,6 +214,8 @@ export function mountComponent (
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
+      // 若定义了template并且不是 “#id” ,又没定义render函数
+      // 这里vm.$options.el || el可忽略, 定义了el，但未定义render函数
       /* istanbul ignore if */
       if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
         vm.$options.el || el) {
@@ -217,6 +226,7 @@ export function mountComponent (
           vm
         )
       } else {
+        // 如果template和都没有定义
         warn(
           'Failed to mount component: template or render function not defined.',
           vm
@@ -226,10 +236,12 @@ export function mountComponent (
   }
 
   // 调用beforeMount钩子
+  // **在挂载开始之前被调用：相关的 render 函数首次被调用。该钩子在服务器端渲染期间不被调用。
   callHook(vm, 'beforeMount')
 
   // 测试环境会在update前后输出一系列console, 所以与生产环境updateComponent设置不同
   let updateComponent
+  // 性能锚点
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
     updateComponent = () => {
@@ -244,7 +256,7 @@ export function mountComponent (
       measure(`vue ${name} render`, startTag, endTag)
 
       mark(startTag)
-      vm._update(vnode, hydrating)
+      vm._update(vnode, hydrating)  // 开发环境中
       mark(endTag)
       measure(`vue ${name} patch`, startTag, endTag)
     }
@@ -253,16 +265,20 @@ export function mountComponent (
     updateComponent = () => {
       // vm._render() 拿到最新的VNode
       // update 进行具体的patch操作
-      vm._update(vm._render(), hydrating)
+      vm._update(vm._render(), hydrating)  // 生产环境中
     }
   }
 
-  // 对实例开启watcher
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+  // 实例化一个渲染Watcher
+  // 这里把 updateComponent 作为 Watcher 的 getter; callBack 为 noop; options 里只定义了 一个 before 函数
+  // before 函数里定义了 beforeUpdate 生命周期钩子
   new Watcher(vm, updateComponent, noop, {
     before () {
+      // 如果是已经挂载的，就触发beforeUpdate方法。
+      // 数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。
       if (vm._isMounted && !vm._isDestroyed) {
         callHook(vm, 'beforeUpdate')
       }
@@ -275,7 +291,8 @@ export function mountComponent (
   if (vm.$vnode == null) {
     // 设置已装载标志位
     vm._isMounted = true
-    // 调用已装载钩子
+    // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。
+    // 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
     callHook(vm, 'mounted')
   }
   return vm
@@ -408,14 +425,16 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 // @param vm 组件
 // @param hook 调用的生命周期名称
 // 生命周期方法都存于组件的$options中
+// 最终执行生命周期的函数都是调用 callHook 方法
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()
-  // 从$options中拿到指定的句柄
+  // 根据传入的字符串 hook，去拿到 vm.$options[hook] 对应的回调函数数组
   const handlers = vm.$options[hook]
   const info = `${hook} hook`
   // 循环执行周期函数句柄, options[lifecycleName]是一个数组
   if (handlers) {
+    // 遍历执行，执行的时候把 vm 作为函数执行的上下文
     for (let i = 0, j = handlers.length; i < j; i++) {
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }

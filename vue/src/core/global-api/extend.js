@@ -1,5 +1,10 @@
 /* @flow */
 
+/**
+ * 为Vue添加静态方法Vue.extend
+ * https://cn.vuejs.org/v2/api/#Vue-extend-options
+ */
+
 import { ASSET_TYPES } from 'shared/constants'
 import { defineComputed, proxy } from '../instance/state'
 import { extend, mergeOptions, validateComponentName } from '../util/index'
