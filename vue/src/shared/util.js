@@ -108,6 +108,7 @@ export function toNumber (val: string): number | string {
  * Make a map and return a function for checking if a key
  * is in that map.
  */
+// makeMap 返回一个函数 接收一个参数 val => map[val]
 export function makeMap (
   str: string,
   expectsLowerCase?: boolean
@@ -124,6 +125,9 @@ export function makeMap (
 
 /**
  * Check if a tag is a built-in tag.
+ * 接收一个参数，这个参数就是 makeMap里的 val
+ * 最后一个为 true，标识 slot,component 都转换为小写匹配
+ * 这里检测 tag 是不是 slot,component
  */
 export const isBuiltInTag = makeMap('slot,component', true)
 
@@ -134,6 +138,7 @@ export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is')
 
 /**
  * Remove an item from an array.
+ * 删除数组中指定元素
  */
 export function remove (arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
@@ -146,6 +151,7 @@ export function remove (arr: Array<any>, item: any): Array<any> | void {
 
 /**
  * Check whether an object has the property.
+ * 检查对象自身属性中是否具有指定的属性
  */
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export function hasOwn (obj: Object | Array<*>, key: string): boolean {
@@ -154,6 +160,7 @@ export function hasOwn (obj: Object | Array<*>, key: string): boolean {
 
 /**
  * Create a cached version of a pure function.
+ * cached 里做了一个闭包，定义了一个 cache 对象用于缓存
  */
 export function cached<F: Function> (fn: F): F {
   const cache = Object.create(null)
@@ -167,7 +174,14 @@ export function cached<F: Function> (fn: F): F {
  * Camelize a hyphen-delimited string.
  */
 const camelizeRE = /-(\w)/g
+// \w 匹配字母或数字或下划线或汉字 等价于 '[^A-Za-z0-9_]'
+// ()：匹配小括号内的字符串，可以是一个，也可以是多个，常跟“|”（或）符号搭配使用，是多选结构的
+// regex：(way|zgw)  result：结果是可以匹配出way的，因为是多选结构，小括号是匹配字符串的
+// 这里 cached 做了一层缓存闭包
 export const camelize = cached((str: string): string => {
+  // replace 方法可接收两个参数
+  // 第一个参数接收一个正则表达式
+  // 第二个参数接收一个函数  会对每个匹配到的字符串做一次处理
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 })
 
@@ -180,6 +194,7 @@ export const capitalize = cached((str: string): string => {
 
 /**
  * Hyphenate a camelCase string.
+ * 这里会把传入的字符串AFDSAFDS转成a-f-d-s-a-f-d-s的形式
  */
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {

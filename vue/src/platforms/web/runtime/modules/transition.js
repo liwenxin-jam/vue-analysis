@@ -1,5 +1,9 @@
 /* @flow */
 
+// create: _enter,            // 创建过渡
+// activate: _enter,          // 触发过渡
+// remove                     // 移除过渡
+
 import { inBrowser, isIE9, warn } from 'core/util/index'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
 import { activeInstance } from 'core/instance/lifecycle'
@@ -20,7 +24,7 @@ import {
   removeTransitionClass
 } from '../transition-util'
 
-export function enter (vnode: VNodeWithData, toggleDisplay: ?() => void) {
+export function enter(vnode: VNodeWithData, toggleDisplay: ? () => void) {
   const el: any = vnode.elm
 
   // call leave callback now
@@ -76,33 +80,33 @@ export function enter (vnode: VNodeWithData, toggleDisplay: ?() => void) {
     return
   }
 
-  const startClass = isAppear && appearClass
-    ? appearClass
-    : enterClass
-  const activeClass = isAppear && appearActiveClass
-    ? appearActiveClass
-    : enterActiveClass
-  const toClass = isAppear && appearToClass
-    ? appearToClass
-    : enterToClass
+  const startClass = isAppear && appearClass ?
+    appearClass :
+    enterClass
+  const activeClass = isAppear && appearActiveClass ?
+    appearActiveClass :
+    enterActiveClass
+  const toClass = isAppear && appearToClass ?
+    appearToClass :
+    enterToClass
 
-  const beforeEnterHook = isAppear
-    ? (beforeAppear || beforeEnter)
-    : beforeEnter
-  const enterHook = isAppear
-    ? (typeof appear === 'function' ? appear : enter)
-    : enter
-  const afterEnterHook = isAppear
-    ? (afterAppear || afterEnter)
-    : afterEnter
-  const enterCancelledHook = isAppear
-    ? (appearCancelled || enterCancelled)
-    : enterCancelled
+  const beforeEnterHook = isAppear ?
+    (beforeAppear || beforeEnter) :
+    beforeEnter
+  const enterHook = isAppear ?
+    (typeof appear === 'function' ? appear : enter) :
+    enter
+  const afterEnterHook = isAppear ?
+    (afterAppear || afterEnter) :
+    afterEnter
+  const enterCancelledHook = isAppear ?
+    (appearCancelled || enterCancelled) :
+    enterCancelled
 
   const explicitEnterDuration: any = toNumber(
-    isObject(duration)
-      ? duration.enter
-      : duration
+    isObject(duration) ?
+    duration.enter :
+    duration
   )
 
   if (process.env.NODE_ENV !== 'production' && explicitEnterDuration != null) {
@@ -173,7 +177,7 @@ export function enter (vnode: VNodeWithData, toggleDisplay: ?() => void) {
   }
 }
 
-export function leave (vnode: VNodeWithData, rm: Function) {
+export function leave(vnode: VNodeWithData, rm: Function) {
   const el: any = vnode.elm
 
   // call enter callback now
@@ -210,9 +214,9 @@ export function leave (vnode: VNodeWithData, rm: Function) {
   const userWantsControl = getHookArgumentsLength(leave)
 
   const explicitLeaveDuration: any = toNumber(
-    isObject(duration)
-      ? duration.leave
-      : duration
+    isObject(duration) ?
+    duration.leave :
+    duration
   )
 
   if (process.env.NODE_ENV !== 'production' && isDef(explicitLeaveDuration)) {
@@ -245,7 +249,7 @@ export function leave (vnode: VNodeWithData, rm: Function) {
     performLeave()
   }
 
-  function performLeave () {
+  function performLeave() {
     // the delayed leave may have already been cancelled
     if (cb.cancelled) {
       return
@@ -280,7 +284,7 @@ export function leave (vnode: VNodeWithData, rm: Function) {
 }
 
 // only used in dev mode
-function checkDuration (val, name, vnode) {
+function checkDuration(val, name, vnode) {
   if (typeof val !== 'number') {
     warn(
       `<transition> explicit ${name} duration is not a valid number - ` +
@@ -296,7 +300,7 @@ function checkDuration (val, name, vnode) {
   }
 }
 
-function isValidDuration (val) {
+function isValidDuration(val) {
   return typeof val === 'number' && !isNaN(val)
 }
 
@@ -306,7 +310,7 @@ function isValidDuration (val) {
  * - a wrapped component method (check ._length)
  * - a plain function (.length)
  */
-function getHookArgumentsLength (fn: Function): boolean {
+function getHookArgumentsLength(fn: Function): boolean {
   if (isUndef(fn)) {
     return false
   }
@@ -314,16 +318,16 @@ function getHookArgumentsLength (fn: Function): boolean {
   if (isDef(invokerFns)) {
     // invoker
     return getHookArgumentsLength(
-      Array.isArray(invokerFns)
-        ? invokerFns[0]
-        : invokerFns
+      Array.isArray(invokerFns) ?
+      invokerFns[0] :
+      invokerFns
     )
   } else {
     return (fn._length || fn.length) > 1
   }
 }
 
-function _enter (_: any, vnode: VNodeWithData) {
+function _enter(_: any, vnode: VNodeWithData) {
   if (vnode.data.show !== true) {
     enter(vnode)
   }
@@ -332,7 +336,7 @@ function _enter (_: any, vnode: VNodeWithData) {
 export default inBrowser ? {
   create: _enter,
   activate: _enter,
-  remove (vnode: VNode, rm: Function) {
+  remove(vnode: VNode, rm: Function) {
     /* istanbul ignore else */
     if (vnode.data.show !== true) {
       leave(vnode, rm)

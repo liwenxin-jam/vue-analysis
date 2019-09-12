@@ -1,5 +1,7 @@
 /* @flow */
 
+// create: updateAttrs, 创建一个 attrs
+// update: updateAttrs  更新一个 attrs
 import { isIE, isIE9, isEdge } from 'core/util/env'
 
 import {
@@ -18,7 +20,7 @@ import {
   convertEnumeratedValue
 } from 'web/util/index'
 
-function updateAttrs (oldVnode: VNodeWithData, vnode: VNodeWithData) {
+function updateAttrs(oldVnode: VNodeWithData, vnode: VNodeWithData) {
   const opts = vnode.componentOptions
   if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
     return
@@ -59,7 +61,7 @@ function updateAttrs (oldVnode: VNodeWithData, vnode: VNodeWithData) {
   }
 }
 
-function setAttr (el: Element, key: string, value: any) {
+function setAttr(el: Element, key: string, value: any) {
   if (el.tagName.indexOf('-') > -1) {
     baseSetAttr(el, key, value)
   } else if (isBooleanAttr(key)) {
@@ -70,9 +72,9 @@ function setAttr (el: Element, key: string, value: any) {
     } else {
       // technically allowfullscreen is a boolean attribute for <iframe>,
       // but Flash expects a value of "true" when used on <embed> tag
-      value = key === 'allowfullscreen' && el.tagName === 'EMBED'
-        ? 'true'
-        : key
+      value = key === 'allowfullscreen' && el.tagName === 'EMBED' ?
+        'true' :
+        key
       el.setAttribute(key, value)
     }
   } else if (isEnumeratedAttr(key)) {
@@ -88,7 +90,7 @@ function setAttr (el: Element, key: string, value: any) {
   }
 }
 
-function baseSetAttr (el, key, value) {
+function baseSetAttr(el, key, value) {
   if (isFalsyAttrValue(value)) {
     el.removeAttribute(key)
   } else {
