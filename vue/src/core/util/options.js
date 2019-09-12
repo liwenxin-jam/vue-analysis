@@ -276,6 +276,7 @@ function checkComponents (options: Object) {
   }
 }
 
+// 以字母开头，任意单词字符结尾，[\w]　匹配任意单词字符
 export function validateComponentName (name: string) {
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
@@ -283,6 +284,8 @@ export function validateComponentName (name: string) {
       'should conform to valid custom element name in html5 specification.'
     )
   }
+  // isBuiltInTag 判断 name 是不是 slot,component
+  // config.isReservedTag判断 name 是不是 html 保留标签
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -382,8 +385,8 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 }
 
 /**
- * Merge two option objects into a new one.
- * Core utility used in both instantiation and inheritance.
+ * Merge two option objects into a new one.  合并两个option到一个新object里
+ * Core utility used in both instantiation and inheritance. 用于实例化和继承的核心实用程序。
  */
 export function mergeOptions (
   parent: Object,
@@ -439,17 +442,21 @@ export function mergeOptions (
  * This function is used because child instances need access
  * to assets defined in its ancestor chain.
  */
+ // 子实例需要访问在其祖先链中定义的资产
 export function resolveAsset (
-  options: Object,
-  type: string,
-  id: string,
-  warnMissing?: boolean
+  options: Object,  // vm.$options
+  type: string,     // driectives 或者其他
+  id: string,       // 指令 name 或其他
+  warnMissing?: boolean  // 是否显示警告信息
 ): any {
+  // 如果 id 不为字符串，则直接跳过
   /* istanbul ignore if */
   if (typeof id !== 'string') {
     return
   }
+  // 获取 options[type] 对象
   const assets = options[type]
+  // 检查 assets 对象自身属性中是否具有指定 id 属性，有则直接返回
   // check local registration variations first
   if (hasOwn(assets, id)) return assets[id]
   const camelizedId = camelize(id)

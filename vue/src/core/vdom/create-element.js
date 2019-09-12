@@ -133,6 +133,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      // 传递的是一个组件，进来这里
       // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
