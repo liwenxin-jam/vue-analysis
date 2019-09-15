@@ -1,5 +1,8 @@
 /* @flow */
 
+/**
+ * 为Vue添加静态方法Vue.mixin
+ */
 import { mergeOptions } from '../util/index'
 
 export function initMixin (Vue: GlobalAPI) {

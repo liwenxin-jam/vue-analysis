@@ -1,80 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>vue源码调试</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>vue源码调试</title>
-</head>
-
-<body>
-  <div id="app">
-    <h1>
-      {{name}}
-    </h1>
-    <Todos></Todos>
-  </div>
-
-  <template id="hello">
-    <div>
-      <h1>{{ques}}</h1>
-      <div>
-        <input type="text" v-model="val">
-        <button @click="addTodo">添加</button>
-      </div>
-      <ul>
-        <li v-for="todo in todos">{{todo}}</li>
-      </ul>
+  <body>
+    <div id="app">
+      <h1>
+        {{ name }}
+      </h1>
+      <Todos></Todos>
     </div>
-  </template>
 
-  <script src="./dist/vue.js"></script>
-  <script>
-    let Todos = {
-      data() {
-        return {
-          val: '',
-          todos: ['吃饭', '睡觉', '打扑克'],
-          ques: '扑克是谁'
-        }
-      },
-      template: '#hello', // 1、是string类型，需要#号开头 2、是一个dom元素，取outerHTML 3、前两者都没有，通过el去获取或者手动通过$mount('#app')去挂载
-      methods: {
-        addTodo() {
-          if (this.val) {
-            this.todos.push(this.val);
-            this.val = '';
+    <template id="hello">
+      <div>
+        <h1>{{ ques }}</h1>
+        <div>
+          <input type="text" v-model="val" />
+          <button @click="addTodo">添加</button>
+        </div>
+        <ul>
+          <li v-for="todo in todos">{{ todo }}</li>
+        </ul>
+      </div>
+    </template>
+
+    <script src="./dist/vue.js"></script>
+    <!-- 增加type="text/html"让script脚本不生效，相当于注释 -->
+    <script>
+      let Todos = {
+        data() {
+          return {
+            val: "",
+            todos: ["吃饭", "睡觉", "打扑克"],
+            ques: "扑克是谁"
+          };
+        },
+        template: "#hello", // 1、是string类型，需要#号开头 2、是一个dom元素，取outerHTML 3、前两者都没有，通过el去获取或者手动通过$mount('#app')去挂载
+        methods: {
+          addTodo() {
+            if (this.val) {
+              this.todos.push(this.val);
+              this.val = "";
+            }
           }
         }
-      }
-    };
+      };
 
-    new Vue({
-      components: {
-        Todos
-      },
-      data() {
-        return {
-          name: 'xxlai'
+      new Vue({
+        components: {
+          Todos
+        },
+        data() {
+          return {
+            name: "xxlai"
+          };
+        },
+        // 有render的时候忽略template直接执行render函数，没有render把template转成render函数再执行
+        // 替换el或者$mount挂载的div(#app)
+        // render(createElement) {
+        //   return createElement('div', {
+        //     attrs: {
+        //       id: 'app'
+        //     }
+        //   }, this.message)
+        // },
+        mounted() {
+          // _开头，默认是私有属性，不建议直接访问
+          // console.log(this._data.name)
+          console.log(this.name);
         }
-      },
-      // 有render的时候忽略template直接执行render函数，没有render把template转成render函数再执行
-      // 替换el或者$mount挂载的div(#app)
-      // render(createElement) {
-      //   return createElement('div', {
-      //     attrs: {
-      //       id: 'app'
-      //     }
-      //   }, this.message)
-      // },
-      mounted() {
-        // _开头，默认是私有属性，不建议直接访问
-        // console.log(this._data.name)
-        console.log(this.name)
-      }
-    }).$mount('#app');
-  </script>
-</body>
-
+      }).$mount("#app");
+    </script>
+  </body>
 </html>

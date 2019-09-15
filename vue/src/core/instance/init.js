@@ -48,7 +48,7 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
-      // 设置实例的$options
+      // 设置实例的$options，第一次 new Vue()是执行这里，_isComponent为false
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
