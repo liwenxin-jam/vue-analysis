@@ -45,38 +45,40 @@ export default class VNode {
     asyncFactory?: Function
   ) {
     // vnode的tag名称
-    this.tag = tag
+    this.tag = tag                // 当前节点标签名，DOM 中的文本内容被当做了一个只有 text 没有 tag 的节点。
     // vnode的相关属性,参见: https://cn.vuejs.org/v2/guide/render-function.html#深入data-object参数
-    this.data = data
+    this.data = data              // 当前节点数据（ VNodeData 类型） 像 class、id 等 HTML 属性都放在了 data 中
     // vnode的子节点树， array结构
     // 参见: https://cn.vuejs.org/v2/guide/render-function.html#createElement-参数
-    this.children = children
+    this.children = children      // 当前节点子节点
     // vnode的文本
-    this.text = text
-    this.elm = elm
-    this.ns = undefined
-    this.context = context
-    this.fnContext = undefined
-    this.fnOptions = undefined
-    this.fnScopeId = undefined
-    this.key = data && data.key
-    this.componentOptions = componentOptions
-    this.componentInstance = undefined
-    this.parent = undefined
-    this.raw = false
-    this.isStatic = false
-    this.isRootInsert = true
+    this.text = text              // 当前节点文本
+    this.elm = elm                // 当前节点对应的真实DOM节点，elm 属性则指向了其相对应的真实 DOM 节点。
+    this.ns = undefined           // 当前节点命名空间
+    this.context = context        // 当前节点上下文   所有对象的 context 选项都指向了 Vue 实例
+    this.fnContext = undefined    // 函数化组件上下文
+    this.fnOptions = undefined    // 函数化组件配置项
+    this.fnScopeId = undefined    // 函数化组件ScopeId // 方法作用域id
+    this.key = data && data.key   // 子节点key属性
+    this.componentOptions = componentOptions  // 组件配置项
+    this.componentInstance = undefined  // 组件实例
+    this.parent = undefined             // 当前节点父节点
+    this.raw = false                    // 是否为原生HTML或只是普通文本
+    this.isStatic = false               // 静态节点标志 keep-alive
+    this.isRootInsert = true            // 是否作为根节点插入
     // 是否是空vnode的标记
-    this.isComment = false
+    this.isComment = false              // 是否为注释节点
     // 是否是通过clone VNode而来
-    this.isCloned = false
-    this.isOnce = false
-    this.asyncFactory = asyncFactory
-    this.asyncMeta = undefined
-    this.isAsyncPlaceholder = false
+    this.isCloned = false               // 是否为克隆节点
+    this.isOnce = false                 // 是否为v-once节点
+    this.asyncFactory = asyncFactory    // 异步工厂方法
+    this.asyncMeta = undefined          // 异步Meta
+    this.isAsyncPlaceholder = false     // 是否为异步占位
   }
 
   // DEPRECATED: alias for componentInstance for backwards compat.
+  // 容器实例向后兼容的别名
+  // 获取组件实例
   /* istanbul ignore next */
   get child (): Component | void {
     return this.componentInstance

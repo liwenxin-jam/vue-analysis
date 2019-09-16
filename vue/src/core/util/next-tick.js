@@ -7,10 +7,10 @@ import { isIE, isIOS, isNative } from './env'
 
 export let isUsingMicroTask = false
 
-const callbacks = []
-let pending = false
+const callbacks = []    // 回调函数数组
+let pending = false     // pending状态，是否正在执行的flag
 
-function flushCallbacks () {
+function flushCallbacks () {    // 执行下一个回调
   pending = false
   const copies = callbacks.slice(0)
   callbacks.length = 0
@@ -70,24 +70,26 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     textNode.data = String(counter)
   }
   isUsingMicroTask = true
-} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) { // 判断 浏览器是否支持 setImmediate
   // Fallback to setImmediate.
   // Techinically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = () => {
     setImmediate(flushCallbacks)
   }
-} else {
+} else { // 最后考虑使用setTimeout
   // Fallback to setTimeout.
   timerFunc = () => {
     setTimeout(flushCallbacks, 0)
   }
 }
 
+// vue源码中的nexttick接收两个参数，要延迟执行的回调函数（callback），和执行该函数的指定上下文
+// (context),如果没有上下文参数，则会默认为全局上下文。
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
-  callbacks.push(() => {
-    if (cb) {
+  callbacks.push(() => {  // 将回调函数转为数组来遍历执行
+    if (cb) {   // 有回调则执行
       try {
         cb.call(ctx)
       } catch (e) {
@@ -97,12 +99,13 @@ export function nextTick (cb?: Function, ctx?: Object) {
       _resolve(ctx)
     }
   })
-  if (!pending) {
+  if (!pending) {   // 如果当前没有执行回调则执行
     pending = true
     timerFunc()
   }
   // $flow-disable-line
   if (!cb && typeof Promise !== 'undefined') {
+    // 如果么有回调，且支持promise，返回promise的resolve函数
     return new Promise(resolve => {
       _resolve = resolve
     })

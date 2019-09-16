@@ -43,34 +43,47 @@ export default class Watcher {
   value: any;
 
   constructor (
-    vm: Component,
-    expOrFn: string | Function,
-    cb: Function,
-    options?: ?Object,
-    isRenderWatcher?: boolean
+    vm: Component,                  // vm实例
+    expOrFn: string | Function,     // 最终做为 watcher 的 getter    updateComponent
+    cb: Function,                   // 回调函数
+    options?: ?Object,              // 配置对象 渲染函数时 有 before 函数
+    isRenderWatcher?: boolean       // 是否是渲染 watch
   ) {
     this.vm = vm
+    // 若是 渲染 watcher 把 this 缓存在 vm._watcher 上
     if (isRenderWatcher) {
       vm._watcher = this
     }
+    // push 进 _watchers 数组
     vm._watchers.push(this)
     // options
     if (options) {
-      this.deep = !!options.deep
-      this.user = !!options.user
-      this.lazy = !!options.lazy
-      this.sync = !!options.sync
-      this.before = options.before
+      this.deep = !!options.deep    // 用户定义 watch 深层遍历监听数据变化
+      this.user = !!options.user    // 是否是 user watch
+      this.lazy = !!options.lazy    // 是否是 computed watch
+      this.sync = !!options.sync    // 同步
+      this.before = options.before  // 这里是 before 函数，里面执行了 callHook(vm, 'beforeUpdate') 钩子
     } else {
-      this.deep = this.user = this.lazy = this.sync = false
+      this.deep = this.user = this.lazy = this.sync = false   // 如果没有转入，统一置为 false
     }
-    this.cb = cb
-    this.id = ++uid // uid for batching
-    this.active = true
+    this.cb = cb                          // 这很重要，自增的，用于标识这个 watcher, 默认为 0，++在前面，第一个为1
+    this.id = ++uid // uid for batching   // 标识当前为 活动watch
+    this.active = true                    // 为 computed watchers 特有属性
     this.dirty = this.lazy // for lazy watchers
     this.deps = []
     this.newDeps = []
-    this.depIds = new Set()
+
+    // Set对象是值的集合，你可以按照插入的顺序迭代它的元素, Set 中的元素是唯一的
+    // Set.prototype.size         返回Set对象的值的个数
+    // Set.prototype.add(value)   在Set对象尾部添加一个元素。返回该Set对象
+    // Set.prototype.clear()      移除Set对象内的所有元素。
+    // Set.prototype.has(value)   返回一个布尔值，表示该值在Set中存在与否
+    // Set.prototype.delete(value) 移除Set的中与这个值相等的元素
+    // 用forEach迭代
+    // mySet.forEach(function(value) {
+    //   console.log(value);
+    // });
+    this.depIds = new Set()     // 用于在更新时，缓存依赖ID
     this.newDepIds = new Set()
     this.expression = process.env.NODE_ENV !== 'production'
       ? expOrFn.toString()
@@ -78,7 +91,11 @@ export default class Watcher {
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
+      // 当是在render Watchers 时为     updateComponent = () => {
+      //                                   vm._update(vm._render(), hydrating)
+      //                               }
     } else {
+      // 当为 computed watchers 时，他通过 parsePath 转换为函数。传入字符串，通过parsePath获取data上的值
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
@@ -90,6 +107,7 @@ export default class Watcher {
         )
       }
     }
+    // 若是 渲染 watch 直接调用 watch 上的 get() 方法求值
     this.value = this.lazy
       ? undefined
       : this.get()
@@ -97,12 +115,15 @@ export default class Watcher {
 
   /**
    * Evaluate the getter, and re-collect dependencies.
+   * Watcher的构造函数最终调用了 get 方法
    */
   get () {
+    // 将当前 Watcher 实例传递给 Dep 的 Dep.target, 渲染下一个 watch 时，会把 上一个 watch push 进 targetStack 数组
     pushTarget(this)
     let value
     const vm = this.vm
     try {
+      // 执行 Watcher 所监测的数据的 getter 方法。 渲染 watch 时也就是执行 updateComponent
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
@@ -116,7 +137,9 @@ export default class Watcher {
       if (this.deep) {
         traverse(value)
       }
+      // ** 渲染完当前 watch时，将， 将 Dep.target 恢复到上一个值
       popTarget()
+      // 将当前 Watcher 从 Dep 的 subs 中去除
       this.cleanupDeps()
     }
     return value
@@ -138,6 +161,7 @@ export default class Watcher {
 
   /**
    * Clean up for dependency collection.
+   * 清理依赖项集合
    */
   cleanupDeps () {
     let i = this.deps.length
@@ -177,7 +201,10 @@ export default class Watcher {
    * Will be called by the scheduler.
    */
   run () {
+    // 销毁 组件时，先把 active 置为 false
     if (this.active) {
+      // 先通过 get 方法求值
+      // 如果求值不一样 或者 value 是一个对象 或者 deep watcher 的话
       const value = this.get()
       if (
         value !== this.value ||
@@ -190,6 +217,7 @@ export default class Watcher {
         // set new value
         const oldValue = this.value
         this.value = value
+        // 如果是 user watcher
         if (this.user) {
           try {
             this.cb.call(this.vm, value, oldValue)
@@ -197,6 +225,7 @@ export default class Watcher {
             handleError(e, this.vm, `callback for watcher "${this.expression}"`)
           }
         } else {
+          // **这里的 cb 回调函数传递的参数就是 value 和 oldValue。
           this.cb.call(this.vm, value, oldValue)
         }
       }

@@ -80,6 +80,8 @@ export function updateListeners (
       if (isTrue(event.once)) {
         cur = on[name] = createOnceHandler(event.name, cur, event.capture)
       }
+      // 这里调用传进来的 add 方法，将父级的事件定义到当前vm中。
+      // add方法定义在调用updateListeners方法src\core\instance\events.js中
       add(event.name, cur, event.capture, event.passive, event.params)
     } else if (cur !== old) {
       old.fns = cur

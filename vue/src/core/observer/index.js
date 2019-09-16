@@ -44,6 +44,7 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
+    // **然后判断数据，如果是数组，触发 observeArray 方法，遍历执行 observe 方法
     if (Array.isArray(value)) {
       if (hasProto) {
         protoAugment(value, arrayMethods)
@@ -52,6 +53,7 @@ export class Observer {
       }
       this.observeArray(value)
     } else {
+      // **如果是对象，触发walk方法
       this.walk(value)
     }
   }
@@ -61,6 +63,8 @@ export class Observer {
    * getter/setters. This method should only be called when
    * value type is Object.
    */
+  // 方法中遍历了数据对象，为对象每个属性执行 defineReactive 方法
+  // 【找到 defineReactive 方法，该方法为 mvvm 数据变化检测的核心】
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
@@ -107,11 +111,14 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
  */
+// 重点在 observe 方法
 export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 如果是 对象 或是一个 VNode 直接返回
   if (!isObject(value) || value instanceof VNode) {
     return
   }
   let ob: Observer | void
+  // 若对象上存在 __ob__ 并且 是 Observer 对象实例
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -121,6 +128,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
+    // **observe 方法通过传入的值最终返回一个Observer类的实例对象
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -132,6 +140,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 /**
  * Define a reactive property on an Object.
  */
+// 【defineReactive 方法，该方法为 mvvm 数据变化检测的核心】
 export function defineReactive (
   obj: Object,
   key: string,
@@ -149,17 +158,20 @@ export function defineReactive (
   // cater for pre-defined getter/setters
   const getter = property && property.get
   const setter = property && property.set
+  // 当只传了 obj key时，只有在没有 getter或设置的 setter 的情况下，defineReactive才会获取对象的属性
   if ((!getter || setter) && arguments.length === 2) {
     val = obj[key]
   }
 
   let childOb = !shallow && observe(val)
+  // **为对象属性添加 set 和 get 方法
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
+        // **vue 在 get 方法中执行 dep.depend() 方法
         dep.depend()
         if (childOb) {
           childOb.dep.depend()
@@ -171,7 +183,11 @@ export function defineReactive (
       return value
     },
     set: function reactiveSetter (newVal) {
+      // 首先会针对通过用户自定义的 get 求值，未定义则不求值
       const value = getter ? getter.call(obj) : val
+      // 新旧值相同 return , 打破了自定义对象的行为。如果我们定义 Object.defineProperty(obj, 'x', ... set: ...)并运行
+      // obj.x = obj.x 那么通常setter将运行，但 newVal === value会破坏此逻辑并阻止setter运行
+      // 所以加了 newVal !== newVal && value !== value 例外
       /* eslint-disable no-self-compare */
       if (newVal === value || (newVal !== newVal && value !== value)) {
         return
@@ -182,12 +198,15 @@ export function defineReactive (
       }
       // #7981: for accessor properties without setter
       if (getter && !setter) return
+      // 如果定义了自定义 set 方法，调用自定义 set
       if (setter) {
         setter.call(obj, newVal)
       } else {
         val = newVal
       }
+      // 如果新值也是一个对象，调用 observe 对新值 observe ，变成一个响应式对象
       childOb = !shallow && observe(newVal)
+      // **在 set 方法中执行 dep.notify() 方法
       dep.notify()
     }
   })

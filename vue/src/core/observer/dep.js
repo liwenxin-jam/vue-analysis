@@ -25,15 +25,17 @@ export default class Dep {
   }
 
   removeSub (sub: Watcher) {
+    // remove 方法删除数组 this.subs 中 sub 元素
     remove(this.subs, sub)
   }
-
+  // **在 depend 方法中，Dep.target 就是一个 Watcher 实例，
+  // **它的 addDep 方法最终会调用到 Dep 的 addSubs 方法。subs 是 Watcher 数组。即将当前 watcher 存到 Dep 的 subs 数组中
   depend () {
     if (Dep.target) {
       Dep.target.addDep(this)
     }
   }
-
+  // 在 notify 方法中，将 Watcher 数组 subs 遍历，执行他们的 update 方法。update 最终会去执行 watcher 的回调函数。
   notify () {
     // stabilize the subscriber list first
     const subs = this.subs.slice()
@@ -43,6 +45,7 @@ export default class Dep {
       // order
       subs.sort((a, b) => a.id - b.id)
     }
+    // 遍历所有 watch 执行 watch 的 update 方法
     for (let i = 0, l = subs.length; i < l; i++) {
       subs[i].update()
     }
@@ -53,13 +56,15 @@ export default class Dep {
 // This is globally unique because only one watcher
 // can be evaluated at a time.
 Dep.target = null
-const targetStack = []
+const targetStack = []    // targetStack 数组用于缓存 Watch 队列
 
+// pushTarget 函数,将当前 Watch 缓存到 targetStack; 将即将要执行的 watch 附值到 Dep.target 上
 export function pushTarget (target: ?Watcher) {
   targetStack.push(target)
   Dep.target = target
 }
 
+// 将 上一个执行的 watch 从 targetStack 数组中拿出，置到 Dep.target 上
 export function popTarget () {
   targetStack.pop()
   Dep.target = targetStack[targetStack.length - 1]
