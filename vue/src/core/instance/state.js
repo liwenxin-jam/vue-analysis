@@ -38,8 +38,8 @@ import {
 // defineProperty时的公用结构
 // 每次使用前都重设get/set可能会是个坑
 const sharedPropertyDefinition = {
-  enumerable: true,
-  configurable: true,
+  enumerable: true,     // 可枚举
+  configurable: true,   // 可配置
   get: noop,
   set: noop
 }
@@ -70,10 +70,8 @@ export function initState (vm: Component) {
 
   // props初始化
   if (opts.props) initProps(vm, opts.props)
-
   // methods初始化
   if (opts.methods) initMethods(vm, opts.methods)
-
   // data没传也需要初始化，设为空对象{}， 执行监测
   if (opts.data) {
     initData(vm)
@@ -445,12 +443,7 @@ function createWatcher (
   return vm.$watch(expOrFn, handler, options)
 }
 
-// Vue原型链上增加:
-// $data
-// $props
-// $set
-// $delete
-// $watch
+// Vue原型链上增加: $data $props $set $delete $watch
 export function stateMixin (Vue: Class<Component>) {
   // flow somehow has problems with directly declared definition object
   // when using Object.defineProperty, so we have to procedurally build up
@@ -480,7 +473,7 @@ export function stateMixin (Vue: Class<Component>) {
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 
-  // 原型链添加$watch
+  // 回调函数 cb 是一个对象，那么返回并执行 createWatcher 函数
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,
