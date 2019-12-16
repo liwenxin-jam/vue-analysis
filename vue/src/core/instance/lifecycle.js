@@ -238,6 +238,7 @@ export function mountComponent (
 
   // 调用beforeMount钩子
   // **在挂载开始之前被调用：相关的 render 函数首次被调用。该钩子在服务器端渲染期间不被调用。
+  // beforeMount 执行顺序先父后子
   callHook(vm, 'beforeMount')
 
   // 测试环境会在update前后输出一系列console, 所以与生产环境updateComponent设置不同
@@ -277,6 +278,7 @@ export function mountComponent (
   // 这里把 updateComponent 作为 Watcher 的 getter; callBack 为 noop; options 里只定义了 一个 before 函数
   // before 函数里定义了 beforeUpdate 生命周期钩子
   new Watcher(vm, updateComponent, noop, {
+    // 在 core/observer/scheduler.js 中的 flushSchedulerQueue 方法判断执行
     before () {
       // 如果是已经挂载的，就触发beforeUpdate方法。
       // 数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。
@@ -294,6 +296,7 @@ export function mountComponent (
     vm._isMounted = true
     // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。
     // 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
+    // mounted 执行顺序先子后父
     callHook(vm, 'mounted')
   }
   return vm

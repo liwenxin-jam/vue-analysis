@@ -535,11 +535,16 @@ export function resolveAsset (
   // 检查 assets 对象自身属性中是否具有指定 id 属性，有则直接返回
   // check local registration variations first
   if (hasOwn(assets, id)) return assets[id]
+  // 转成驼峰写法
   const camelizedId = camelize(id)
+  // 驼峰方式查找
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
+  // 转成首字母大写
   const PascalCaseId = capitalize(camelizedId)
+  // 首字母大写查找
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
   // fallback to prototype chain
+  // 在原型链上查找，按照上边的查找顺序
   const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]
   if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
     warn(

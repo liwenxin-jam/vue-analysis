@@ -173,8 +173,8 @@ export function cached<F: Function> (fn: F): F {
 /**
  * Camelize a hyphen-delimited string.
  */
-const camelizeRE = /-(\w)/g
-// \w 匹配字母或数字或下划线或汉字 等价于 '[^A-Za-z0-9_]'
+const camelizeRE = /-(\w)/g  // 小驼峰写法，匹配 -开头，把首字母转成大写
+// \w 匹配字母或数字或下划线 等价于 '[^A-Za-z0-9_]'
 // ()：匹配小括号内的字符串，可以是一个，也可以是多个，常跟“|”（或）符号搭配使用，是多选结构的
 // regex：(way|zgw)  result：结果是可以匹配出way的，因为是多选结构，小括号是匹配字符串的
 // 这里 cached 做了一层缓存闭包

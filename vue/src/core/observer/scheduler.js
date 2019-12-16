@@ -150,7 +150,7 @@ function callUpdatedHooks (queue) {
   while (i--) {
     const watcher = queue[i]
     const vm = watcher.vm
-    // 这里会判断 _watcher 是否是渲染 watcher, 并且 _isMounted 后 才执行 updated 钩子
+    // 这里会判断 _watcher 是否是渲染 watcher, _isMounted为true代表不是首次渲染，执行 updated 钩子
     if (vm._watcher === watcher && vm._isMounted && !vm._isDestroyed) {
       callHook(vm, 'updated')
     }
