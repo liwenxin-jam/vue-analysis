@@ -30,7 +30,7 @@ const idToTemplate = cached(id => {
 })
 
 // 设置$mount原型链方法
-// 对runtime版本$mount做处理
+// 对runtime版本$mount做扩展处理
 // 增加了对template的编译操作
 // 处理过程:
 // 装载的对象如果有render方法， 说明是预编译的，只需要runtime的处理
@@ -61,6 +61,7 @@ Vue.prototype.$mount = function (
   // 缓存options对象
   const options = this.$options
   // 没有render方法，则需要compile处理，通过解析 template/el 来生成render函数
+  // 执行优先 render > template > el
   // resolve template/el and convert to render function
   if (!options.render) {
     let template = options.template
@@ -96,7 +97,7 @@ Vue.prototype.$mount = function (
       // getOuterHTML 内做了兼容
       template = getOuterHTML(el)
     }
-    // 获取到template开始编译
+    // 处理template，编译过程，将template字符串转成render函数
     if (template) {
       /* 编译性能锚点 */
       /* istanbul ignore if */

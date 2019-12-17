@@ -66,18 +66,18 @@ export function initMixin (Vue: Class<Component>) {
     // expose real self
     vm._self = vm
 
-    initLifecycle(vm) // 初始化实例生命周期
-    initEvents(vm)  // 初始化events事件
-    initRender(vm) // 初始化render函数
+    initLifecycle(vm) // 初始化实例生命周期 $parent, $root, $children, $refs
+    initEvents(vm)  // 初始化events事件 处理父组件传递的监听器
+    initRender(vm) // 初始化render函数 $slots, $scopedSlots, _c(), $createElement()
     // **在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
     callHook(vm, 'beforeCreate')  // 调用beforeCreate生命周期钩子
     // 依赖注入
     // 参考文档: https://cn.vuejs.org/v2/api/#provide-inject
     // 主要给插件和组件库使用
-    initInjections(vm) // resolve injections before data/props
+    initInjections(vm) // resolve injections before data/props 获取注入数据
     initState(vm)  // 初始化State （props、methods、data、computed、watch）
     // 同inject
-    initProvide(vm) // resolve provide after data/props
+    initProvide(vm) // resolve provide after data/props 提供数据，先注入再提供
     // **在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：
     // **数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
     callHook(vm, 'created') // 调用created生命周期钩子

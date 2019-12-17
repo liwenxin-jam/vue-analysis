@@ -45,14 +45,14 @@ export function setActiveInstance(vm: Component) {
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
-  // 取得第一个非abstract类型的parent实例, 将当前实例加入到parent的$children数组中
-  // locate first non-abstract parent
+  // 取得第一个非abstract类型的parent实例
   // locate first non-abstract parent
   let parent = options.parent
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
+    // 将当前实例加入到parent的$children数组中
     parent.$children.push(vm)
   }
 

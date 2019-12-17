@@ -15,7 +15,7 @@ import { isServerRendering } from 'core/util/env'
 // 引入方法组件FunctionalRenderContext
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 
-// 初始化全局api
+// 定义初始化全局api
 initGlobalAPI(Vue)
 
 // 添加Vue.prototype.$isServer， 返回是否服务端渲染

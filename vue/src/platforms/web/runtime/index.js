@@ -57,7 +57,7 @@ Vue.prototype.$mount = function (
 ): Component {
   // 浏览器中访问，取得el元素，否则el为undefined
   el = el && inBrowser ? query(el) : undefined
-   // 装载方法取自lifecycle模块
+   // 装载方法取自core/instance/lifecycle模块
   return mountComponent(this, el, hydrating)
 }
 

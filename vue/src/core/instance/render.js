@@ -59,7 +59,7 @@ export function initRender (vm: Component) {
   //     }
   //   }
   // })
-  // **注意：这里div#app1会整个替换el#app
+  // **注意：这里div#app1会整个替换el#app 相当于render(h)里面的h
   vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
 
   // $attrs & $listeners are exposed for easier HOC creation.
