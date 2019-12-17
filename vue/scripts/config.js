@@ -30,6 +30,7 @@ const resolve = p => {
   // 例如将web/entry-runtime-with-compiler.js分成两部分，在alias查找是否有对应的key，如web
   // 假设查找不到base，就往上级目录查找对应文件夹，如dist
   const base = p.split('/')[0]
+  // 匹配别名映射
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))
   } else {
@@ -37,6 +38,7 @@ const resolve = p => {
   }
 }
 
+// 配置文件，键值对信息，匹配package.json scripts TARGET
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
