@@ -75,7 +75,7 @@ export function initMixin (Vue: Class<Component>) {
     // 参考文档: https://cn.vuejs.org/v2/api/#provide-inject
     // 主要给插件和组件库使用
     initInjections(vm) // resolve injections before data/props 获取注入数据
-    initState(vm)  // 初始化State （props、methods、data、computed、watch）
+    initState(vm)  // 初始化组件中的（props、methods、data、computed、watch）
     // 同inject
     initProvide(vm) // resolve provide after data/props 提供数据，先注入再提供
     // **在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：

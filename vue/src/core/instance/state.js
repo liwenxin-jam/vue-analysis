@@ -73,6 +73,7 @@ export function initState (vm: Component) {
   // methods初始化
   if (opts.methods) initMethods(vm, opts.methods)
   // data没传也需要初始化，设为空对象{}， 执行监测
+  // data处理，响应化处理
   if (opts.data) {
     initData(vm)
   } else {
@@ -207,7 +208,7 @@ function initData (vm: Component) {
       proxy(vm, `_data`, key)
     }
   }
-  // 开始观察数据
+  // 开始观察数据，数据遍历开始
   // observe data
   observe(data, true /* asRootData */)
 }

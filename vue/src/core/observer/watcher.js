@@ -57,6 +57,7 @@ export default class Watcher {
     // push 进 _watchers 数组
     vm._watchers.push(this)
     // options
+    // 修饰符的处理
     if (options) {
       this.deep = !!options.deep    // 用户定义 watch 深层遍历监听数据变化
       this.user = !!options.user    // 是否是 user watch
@@ -95,7 +96,7 @@ export default class Watcher {
       //                                   vm._update(vm._render(), hydrating)
       //                               }
     } else {
-      // 当为 computed watchers 时，他通过 parsePath 转换为函数。传入字符串，通过parsePath获取data上的值
+      // 当为 computed watchers 时，他通过 parsePath 转换为get函数。传入字符串，通过parsePath获取data上的值
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
@@ -107,7 +108,7 @@ export default class Watcher {
         )
       }
     }
-    // 若是 渲染 watch 直接调用 watch 上的 get() 方法求值
+    // 最后通过get()方法求值
     this.value = this.lazy
       ? undefined
       : this.get()
@@ -124,6 +125,7 @@ export default class Watcher {
     const vm = this.vm
     try {
       // 执行 Watcher 所监测的数据的 getter 方法。 渲染 watch 时也就是执行 updateComponent
+      // 触发依赖收集
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
@@ -148,9 +150,11 @@ export default class Watcher {
   /**
    * Add a dependency to this directive.
    */
+  // 相互关系的建立，彼此依赖
   addDep (dep: Dep) {
     const id = dep.id
     if (!this.newDepIds.has(id)) {
+      // set 关系映射
       this.newDepIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {

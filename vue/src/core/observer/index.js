@@ -44,16 +44,21 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
-    // **然后判断数据，如果是数组，触发 observeArray 方法，遍历执行 observe 方法
+    // 判断数据，如果是数组，触发 observeArray 方法，遍历执行 observe 方法
     if (Array.isArray(value)) {
+      // 浏览器中数组是没有原型的
+      // arrayMethods是经过劫持处理后的数组原型
       if (hasProto) {
+        // 直接覆盖原型 __proto__
         protoAugment(value, arrayMethods)
       } else {
+        // 粗暴覆盖
         copyAugment(value, arrayMethods, arrayKeys)
       }
+      // 对数组某些方法进行拦截，例如会新增item的方法，如push、unshift、splice
       this.observeArray(value)
     } else {
-      // **如果是对象，触发walk方法
+      // 如果是普通对象，触发walk方法
       this.walk(value)
     }
   }
@@ -68,6 +73,7 @@ export class Observer {
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+      // 对每个key增加响应式监听
       defineReactive(obj, keys[i])
     }
   }
@@ -111,7 +117,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
  */
-// 重点在 observe 方法
+// 重点在 observe 方法, 返回一个observe对象
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   // 如果是 对象 或是一个 VNode 直接返回
   if (!isObject(value) || value instanceof VNode) {
@@ -140,7 +146,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 /**
  * Define a reactive property on an Object.
  */
-// 【defineReactive 方法，该方法为 mvvm 数据变化检测的核心】
+// 该方法为 mvvm 数据变化检测的核心，给data中每一个key定义数据劫持
 export function defineReactive (
   obj: Object,
   key: string,
@@ -163,18 +169,23 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // 递归子级
   let childOb = !shallow && observe(val)
-  // **为对象属性添加 set 和 get 方法
+  // 定义数据拦截，为对象属性添加 set 和 get 方法
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
+      // Dep.target && dep.addDep()
+      // 依赖收集
       if (Dep.target) {
-        // **vue 在 get 方法中执行 dep.depend() 方法
-        dep.depend()
+        // vue 在 get 方法中执行 dep.depend() 方法
+        dep.depend() // 追加依赖关系
+        // 如果有子ob存在
         if (childOb) {
           childOb.dep.depend()
+          // 如果是数组还要继续处理
           if (Array.isArray(value)) {
             dependArray(value)
           }
@@ -204,9 +215,9 @@ export function defineReactive (
       } else {
         val = newVal
       }
-      // 如果新值也是一个对象，调用 observe 对新值 observe ，变成一个响应式对象
+      // 如果新值也是一个对象，调用 observe 变成一个响应式对象
       childOb = !shallow && observe(newVal)
-      // **在 set 方法中执行 dep.notify() 方法
+      // 通知更新
       dep.notify()
     }
   })
