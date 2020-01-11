@@ -44,7 +44,8 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // 原型链__patch__方法的设置, 区别浏览器和非浏览器
-// 非浏览器中不需要patch， 所以空函数
+// 非浏览器中不需要patch， 所以空函数。
+// 指定补丁方法：传入虚拟dom转为真实dom，1.初始化 2.更新
 // install platform patch function
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
@@ -57,7 +58,8 @@ Vue.prototype.$mount = function (
 ): Component {
   // 浏览器中访问，取得el元素，否则el为undefined
   el = el && inBrowser ? query(el) : undefined
-   // 装载方法取自core/instance/lifecycle模块
+  // 装载方法取自core/instance/lifecycle模块
+  // 初始化，将首次渲染结果替换el
   return mountComponent(this, el, hydrating)
 }
 

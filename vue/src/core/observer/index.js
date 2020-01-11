@@ -41,6 +41,9 @@ export class Observer {
 
   constructor (value: any) {
     this.value = value
+    // object里面新增或者删除属性
+    // arrary有操作新元素的变更方法 例如 push unshift splice等
+    // 需要借助dep去通知响应式数据更新
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
@@ -154,6 +157,7 @@ export function defineReactive (
   customSetter?: ?Function,
   shallow?: boolean
 ) {
+  // 和key 一一对应
   const dep = new Dep()
 
   const property = Object.getOwnPropertyDescriptor(obj, key)
@@ -169,20 +173,22 @@ export function defineReactive (
     val = obj[key]
   }
 
-  // 递归子级
+  // 属性拦截，只要是对象类型均会返回childOb，递归子级
   let childOb = !shallow && observe(val)
   // 定义数据拦截，为对象属性添加 set 和 get 方法
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
+      // 获取key对应的值
       const value = getter ? getter.call(obj) : val
       // Dep.target && dep.addDep()
-      // 依赖收集
+      // 如果存在依赖
       if (Dep.target) {
         // vue 在 get 方法中执行 dep.depend() 方法
+        // 依赖收集
         dep.depend() // 追加依赖关系
-        // 如果有子ob存在
+        // 如果有子ob存在，子ob也收集这个依赖
         if (childOb) {
           childOb.dep.depend()
           // 如果是数组还要继续处理
