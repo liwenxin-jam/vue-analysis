@@ -182,6 +182,7 @@ function callActivatedHooks (queue) {
  */
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id       // id 是自增的
+  // 去重，不存在才入队
   if (has[id] == null) {      // has[id] 为 null, 表示不在这里面
     has[id] = true            // 进去后标识为 true
     // 若不在队列，则 把 watcher push 进 queue
@@ -205,6 +206,7 @@ export function queueWatcher (watcher: Watcher) {
         flushSchedulerQueue()
         return
       }
+      // 异步刷新队列
       nextTick(flushSchedulerQueue)
     }
   }
