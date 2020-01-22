@@ -57,6 +57,7 @@ export function genElement (el: ASTElement, state: CodegenState): string {
     el.pre = el.pre || el.parent.pre
   }
 
+  // 处理逻辑顺序，v-for大于v-if
   if (el.staticRoot && !el.staticProcessed) {
     return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {
