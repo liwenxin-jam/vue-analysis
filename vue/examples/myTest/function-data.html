@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="demo">
+    <h1>Vue组件data为什么必须是个函数？</h1>
+    <comp></comp>
+    <comp></comp>
+    <p>{{counter}}</p>
+  </div>
+  <script src="../../dist/vue.js"></script>
+  <script>
+    Vue.component('comp', {
+      template: `<div @click="counter++">{{counter}}</div>`,
+      // [Vue warn]: The "data" option should be a function that returns a per-instance value in component definitions.
+      // data: {
+      //   counter: 1
+      // }
+      data() {
+        return {
+          counter: 1
+        }
+      }
+    })
+    // 创建实例
+    const app = new Vue({
+      el: '#demo',
+      data: {
+        counter: 1
+      }
+    })
+  </script>
+</body>
+
+</html>

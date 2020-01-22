@@ -142,6 +142,9 @@ strats.data = function (
   childVal: any,
   vm?: Component
 ): ?Function {
+  // 只有第一次new Vue()单实例的时候才会传入vm，执行最后面的的merge规则
+  // 正常都是走没有vm的规则，mergeDataOrFn(parentVal, childVal)
+  // 也是为什么Vue根实例data为什么可以是个函数也可以是个普通对象的原因
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
       process.env.NODE_ENV !== 'production' && warn(

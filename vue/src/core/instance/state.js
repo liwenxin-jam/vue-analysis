@@ -166,7 +166,9 @@ function initData (vm: Component) {
   // 设置vue._data
   // 如果options.data是对象，直接赋值，如果是函数，执行getData方法
   let data = vm.$options.data
-  // 初始化，将data放在_data中
+  // 初始化，将data放在_data中，Vue组件data为什么必须是个函数？
+  // 如果data是函数，则执行之并将其结果作为data选项的值
+  // 如果是一个普通对象，组件复用会共用同一个data引用地址，会导致污染问题
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
