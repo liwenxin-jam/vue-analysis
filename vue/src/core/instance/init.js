@@ -67,7 +67,7 @@ export function initMixin (Vue: Class<Component>) {
     vm._self = vm
 
     initLifecycle(vm) // 初始化实例生命周期 $parent, $root, $children, $refs
-    initEvents(vm)  // 初始化events事件 处理父组件传递的监听器
+    initEvents(vm)  // 初始化events事件 处理父组件传递的事件添加监听
     initRender(vm) // 初始化render函数 $slots, $scopedSlots, _c(), $createElement()
     // **在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
     callHook(vm, 'beforeCreate')  // 调用beforeCreate生命周期钩子
@@ -75,6 +75,7 @@ export function initMixin (Vue: Class<Component>) {
     // 参考文档: https://cn.vuejs.org/v2/api/#provide-inject
     // 主要给插件和组件库使用
     initInjections(vm) // resolve injections before data/props 获取注入数据
+    // 数据初始化，响应式
     initState(vm)  // 初始化组件中的（props、methods、data、computed、watch）
     // 同inject
     initProvide(vm) // resolve provide after data/props 提供数据，先注入再提供

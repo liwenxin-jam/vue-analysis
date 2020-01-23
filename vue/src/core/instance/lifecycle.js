@@ -103,7 +103,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       // 初始化渲染 第一次渲染是真实的dom vm.$el
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
-      // updates
+      // updates diff算法
       // 更新渲染 第二次再渲染是虚拟dom prevVnode
       vm.$el = vm.__patch__(prevVnode, vnode)
     }

@@ -58,10 +58,10 @@ Vue.prototype.$mount = function (
     return this
   }
 
-  // 缓存options对象
+  // 缓存options对象，然后解析
   const options = this.$options
   // 没有render方法，则需要compile处理，通过解析 template/el 来生成render函数
-  // 执行优先 render > template > el
+  // 执行优先级别顺序 render > template > el
   // resolve template/el and convert to render function
   if (!options.render) {
     let template = options.template
@@ -97,7 +97,7 @@ Vue.prototype.$mount = function (
       // getOuterHTML 内做了兼容
       template = getOuterHTML(el)
     }
-    // 处理template，编译过程，将template字符串转成render函数
+    // 如果存在template，执行编译，将template字符串转成render函数
     if (template) {
       /* 编译性能锚点 */
       /* istanbul ignore if */
@@ -127,7 +127,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
-  // 开始挂载
+  // 开始执行挂载
   return mount.call(this, el, hydrating)
 }
 

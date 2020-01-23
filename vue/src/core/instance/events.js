@@ -23,7 +23,7 @@ export function initEvents (vm: Component) {
   // 是否有钩子事件设为false
   vm._hasHookEvent = false
   // init parent attached events
-  // 并初始化连接父级的事件
+  // 初始化获取父级的事件
   const listeners = vm.$options._parentListeners
   if (listeners) {
     // 事件谁派发，谁监听。即谁$emit，就谁$on 例如简化版组件监听 <comp @update="" />
