@@ -261,11 +261,14 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
     )
     return val
   }
+  // 普通赋值
   if (!ob) {
     target[key] = val
     return val
   }
+  // 响应式处理
   defineReactive(ob.value, key, val)
+  // 通知更新
   ob.dep.notify()
   return val
 }

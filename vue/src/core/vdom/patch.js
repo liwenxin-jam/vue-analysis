@@ -666,23 +666,24 @@ export function createPatchFunction (backend) {
       // 执行 data.hook.update 钩子
       if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
     }
-    // 旧 vnode 的 text 选项为 undefined
+    // 判断是否是元素，旧vnode的text选项为undefined
     if (isUndef(vnode.text)) {
+      // 新旧 vnode 都有 children
       if (isDef(oldCh) && isDef(ch)) {
-        // 新旧 vnode 都有 children，且不同，执行 updateChildren 方法。
-        // 如果两个 vnode 都有 children，且 vnode 没有 text、两个 vnode 不相等，执行 updateChildren 方法。这是虚拟 DOM 的关键。
+        // 递归比较
+        // vnode 没有 text、两个 vnode 不相等，执行 updateChildren 方法。这是虚拟 DOM 的关键。
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
       } else if (isDef(ch)) {
+        // 新节点有孩子
         if (process.env.NODE_ENV !== 'production') {
           checkDuplicateKeys(ch)
         }
         // 如果新 vnode 有 children，而老的没有，清空文本，并添加 vnode 节点。
-        // 清空文本，添加 vnode
         if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
+        // 创建 vnode 孩子，并追加
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
       } else if (isDef(oldCh)) {
-        // 如果老 vnode 有 children，而新的没哟，清空文本，并移除 vnode 节点
-        // 移除 vnode
+        // 如果老 vnode 有 children，而新的没有，删除 vnode 节点即可
         removeVnodes(oldCh, 0, oldCh.length - 1)
       } else if (isDef(oldVnode.text)) {
         // 如果两个 vnode 都没有 children，老 vnode 有 text ，新 vnode 没有 text ，则清空 DOM 文本内容
