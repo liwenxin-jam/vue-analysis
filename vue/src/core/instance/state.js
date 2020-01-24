@@ -68,12 +68,13 @@ export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
 
+  // 属性初始化
   // props初始化
   if (opts.props) initProps(vm, opts.props)
   // methods初始化
   if (opts.methods) initMethods(vm, opts.methods)
-  // data没传也需要初始化，设为空对象{}， 执行监测
-  // data处理，响应化处理
+  // data没传也需要初始化，设为空对象{}，执行监测
+  // 数据响应式
   if (opts.data) {
     initData(vm)
   } else {
@@ -181,6 +182,7 @@ function initData (vm: Component) {
     )
   }
   // proxy data on instance
+  // 代理这些数据到实例上
   const keys = Object.keys(data)
   const props = vm.$options.props
   const methods = vm.$options.methods
@@ -207,11 +209,12 @@ function initData (vm: Component) {
       )
     } else if (!isReserved(key)) {
       // isReserved检测key是不是以$或_开头，只有非保留的属性，才执行proxy重新设置defineProperty
+      // 真正代理数据的地方，访问data的属性，实际访问的是_data的属性，外部也可以直接访问_data，但不建议，下划线开头一般是内部属性或方法
       proxy(vm, `_data`, key)
     }
   }
-  // 开始观察数据，数据遍历开始
   // observe data
+  // 响应式操作，开始观察数据，数据遍历开始
   observe(data, true /* asRootData */)
 }
 

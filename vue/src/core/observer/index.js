@@ -34,6 +34,7 @@ export function toggleObserving (value: boolean) {
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
  */
+// 每一个响应式对象都会有一个ob
 export class Observer {
   value: any;
   dep: Dep;
@@ -43,14 +44,16 @@ export class Observer {
     this.value = value
     // object里面新增或者删除属性
     // arrary有操作新元素的变更方法 例如 push unshift splice等
-    // 需要借助dep去通知响应式数据更新
+    // 需要借助dep去通知响应式数据更新，例如使用$set
     this.dep = new Dep()
     this.vmCount = 0
+    // 设置一个__ob__属性引用当前Observer实例
     def(value, '__ob__', this)
-    // 判断数据，如果是数组，触发 observeArray 方法，遍历执行 observe 方法
+    // 判断数据类型，如果是数组，触发 observeArray 方法，遍历执行 observe 方法
     if (Array.isArray(value)) {
+      // 对数组某些方法进行拦截，例如会新增item的方法，如push、unshift、splice
       // 浏览器中数组是没有原型的
-      // arrayMethods是经过劫持处理后的数组原型
+      // 替换数组对象原型，arrayMethods是经过劫持处理后的数组原型
       if (hasProto) {
         // 直接覆盖原型 __proto__
         protoAugment(value, arrayMethods)
@@ -58,7 +61,7 @@ export class Observer {
         // 粗暴覆盖
         copyAugment(value, arrayMethods, arrayKeys)
       }
-      // 对数组某些方法进行拦截，例如会新增item的方法，如push、unshift、splice
+      // 如果数组里面元素是对象还需要做响应式处理
       this.observeArray(value)
     } else {
       // 如果是普通对象，触发walk方法
@@ -126,8 +129,9 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
     return
   }
+  // 观察者
   let ob: Observer | void
-  // 若对象上存在 __ob__ 并且 是 Observer 对象实例
+  // 若对象上存在 __ob__ 并且 是 Observer 对象实例，说明已经是响应式，直接返回
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -137,7 +141,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
-    // **observe 方法通过传入的值最终返回一个Observer类的实例对象
+    // 通过传入的值创建并最终返回一个Observer类的实例对象
     ob = new Observer(value)
   }
   if (asRootData && ob) {
