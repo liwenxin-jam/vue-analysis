@@ -33,6 +33,7 @@ import {
 } from 'weex/runtime/recycle-list/render-component-template'
 
 // inline hooks to be invoked on component VNodes during patch
+// 默认组件管理钩子
 const componentVNodeHooks = {
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
     if (
@@ -45,11 +46,12 @@ const componentVNodeHooks = {
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
       // createComponentInstanceForVnode 方法返回一个 vm 实例
-      // 传入组件 vnode
+      // 创建组件实例，传入组件 vnode
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
       )
+      // 创建完成并挂载
       child.$mount(hydrating ? vnode.elm : undefined, hydrating)
     }
   },

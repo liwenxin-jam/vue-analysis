@@ -39,15 +39,15 @@ export function initExtend (Vue: GlobalAPI) {
     if (process.env.NODE_ENV !== 'production' && name) {
       validateComponentName(name)
     }
-    // 定义子的构造函数
+    // 创建一个VueComponent类，定义子的构造函数
     const Sub = function VueComponent (options) {
       this._init(options)
     }
-    // 把子的构造器原型指向 Vue 原型， 实现原型继承
+    // 把子的构造器原型指向Vue原型，实现原型继承，继承于Vue
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
-    // 合并配置
+    // 合并选项配置，全局组件与局部组件合并注册，方便当前实例可以使用
     Sub.options = mergeOptions(
       Super.options,
       extendOptions
