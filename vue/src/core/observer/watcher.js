@@ -196,6 +196,7 @@ export default class Watcher {
     } else if (this.sync) {
       this.run()
     } else {
+      // 正常不设置任何更新配置，都会走这里
       queueWatcher(this)
     }
   }
