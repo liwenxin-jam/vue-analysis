@@ -265,8 +265,8 @@ export function mountComponent (
   } else {
     // 设置更新组件函数
     updateComponent = () => {
-      // vm._render() 拿到最新的VNode
-      // update 进行具体的patch操作
+      // vm._render() 拿到最新的虚拟VNode
+      // update 进行具体的patch操作，把虚拟dom转成真实dom
       vm._update(vm._render(), hydrating)  // 生产环境中
     }
   }
