@@ -40,11 +40,16 @@ const hooks = ['create', 'activate', 'update', 'remove', 'destroy']
 
 function sameVnode (a, b) {
   return (
+    // 存在key值，且相等
     a.key === b.key && (
       (
+        // 标签名相等
         a.tag === b.tag &&
+        // 是否是注释节点
         a.isComment === b.isComment &&
+        // 是否都定义了data，data包含一些具体信息，例如onclick style
         isDef(a.data) === isDef(b.data) &&
+        // 当标签是<input>的时候，type必须相同
         sameInputType(a, b)
       ) || (
         isTrue(a.isAsyncPlaceholder) &&
@@ -90,6 +95,7 @@ export function createPatchFunction (backend) {
   // 冒泡遍历，初始化拿到所有的模块勾子
   // hooks = ['create', 'activate', 'update', 'remove', 'destroy']
   for (i = 0; i < hooks.length; ++i) {
+    // cbs['create'] = []
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
       // 通过isDef方法判断modules是否定义了hooks里的钩子函数，有则push进 cbs[hooks[i]]
@@ -674,9 +680,9 @@ export function createPatchFunction (backend) {
     // 查找新旧节点是否存在孩子
     const oldCh = oldVnode.children
     const ch = vnode.children
-    // 属性更新
+    // 元素节点属性更新
     if (isDef(data) && isPatchable(vnode)) {
-      // 遍历调用 update 回调，在watcher里并执行 update 钩子
+      // cbs中关于属性更新的数组拿出来[attrFn, classFn, ...]，遍历调用 update 回调，在watcher里并执行 update 钩子
       for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
       // 执行 data.hook.update 钩子
       if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
