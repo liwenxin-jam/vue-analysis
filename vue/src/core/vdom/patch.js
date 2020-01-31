@@ -182,11 +182,13 @@ export function createPatchFunction (backend) {
 
     // 首次创建是一个 root 节点插入
     vnode.isRootInsert = !nested // for transition enter check
-    // createComponent 用于创建组件，在调用了组件初始化钩子之后，初始化组件，并且重新激活组件。在重新激活组件中使用 insert 方法操作 DOM
+    // 组件创建
+    // 在调用了组件初始化钩子之后，初始化组件，并且重新激活组件。在重新激活组件中使用 insert 方法操作 DOM
     if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
       return
     }
 
+    // 原生标签创建
     const data = vnode.data
     const children = vnode.children
     const tag = vnode.tag
@@ -280,7 +282,7 @@ export function createPatchFunction (backend) {
       // it should've created a child instance and mounted it. the child
       // component also has set the placeholder vnode's elm.
       // in that case we can just return the element and be done.
-      // 组件实例存在
+      // 判断组件实例存在
       if (isDef(vnode.componentInstance)) {
         // 属性初始化
         initComponent(vnode, insertedVnodeQueue)
@@ -656,10 +658,9 @@ export function createPatchFunction (backend) {
     // note we only do this if the vnode is cloned -
     // if the new node is not cloned it means the render functions have been
     // reset by the hot-reload-api and we need to do a proper re-render.
-    // 如果新旧 vnode 为静态；新旧 vnode key相同；
-    // 新 vnode 是克隆所得；新 vnode 有 v-once 的属性
-    // 则新 vnode 的 componentInstance 用老的 vnode 的。
-    // 即 vnode 的 componentInstance 保持不变。
+    // 静态节点判断
+    // 如果新旧vnode为静态节点和新旧vnode key相同，且新 vnode 是克隆所得；新 vnode 有 v-once 的属性
+    // 则新 vnode 的 componentInstance 用老的 vnode 的。即 vnode 的 componentInstance 保持不变。
     // 如果两个vnode都为静态，不用更新，所以将以前的 componentInstance 实例传给当前 vnode，并退出
     if (isTrue(vnode.isStatic) &&
       isTrue(oldVnode.isStatic) &&

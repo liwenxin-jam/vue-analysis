@@ -122,6 +122,7 @@ export function _createElement(
     // 编译走这里,这里只会把 children 拍平，变成一维数组
     children = simpleNormalizeChildren(children)
   }
+  // 核心代码：根据标签名称tag做相应操作生成vnode
   let vnode, ns
   // 对 tag 进行判断，这里 tag 可以是一个字符串，也可以是一个组件
   // 字符串情况，div、span、组件tag；
@@ -146,8 +147,9 @@ export function _createElement(
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // 传递的是一个组件，进来这里
+      // resolveAsset 获取组件构造函数，context是组件实例，vm.$options.components.comp
       // component
+      // 自定义组件，获取自定义组件虚拟dom
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // unknown or unlisted namespaced elements

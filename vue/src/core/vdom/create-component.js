@@ -103,6 +103,7 @@ const componentVNodeHooks = {
 
 const hooksToMerge = Object.keys(componentVNodeHooks)
 
+// 创建自定义组件VNode实例
 export function createComponent (
   Ctor: Class<Component> | Function | Object | void,  // 组件类型的类 / 函数 / 对象
   data: ?VNodeData,  // vnode相关data
@@ -198,11 +199,12 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
-  // 安装组件勾子
+  // 安装自定义组件钩子，比如初始化钩子init等等
   installComponentHooks(data)
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
+  // 定义组件名称规则
   const vnode = new VNode(
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
@@ -221,6 +223,7 @@ export function createComponent (
   return vnode
 }
 
+// 合并操作，用户也可能传递钩子，需要整合
 export function createComponentInstanceForVnode (
   vnode: any, // we know it's MountedComponentVNode but flow doesn't
   parent: any, // activeInstance in lifecycle state

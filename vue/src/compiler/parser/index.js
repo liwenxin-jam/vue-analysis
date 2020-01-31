@@ -201,6 +201,8 @@ export function parse (
     }
   }
 
+  // 核心代码：解析HTML
+  // <div id="demo"></div>
   parseHTML(template, {
     warn,
     expectHTML: options.expectHTML,
@@ -210,6 +212,7 @@ export function parse (
     shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
+    // 遇到开始标签执行start
     start (tag, attrs, unary, start, end) {
       // check namespace.
       // inherit parent ns if there is one
@@ -221,6 +224,7 @@ export function parse (
         attrs = guardIESVGBug(attrs)
       }
 
+      // 遇到开始标签，创建一个ast对象
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
@@ -273,10 +277,12 @@ export function parse (
       if (platformIsPreTag(element.tag)) {
         inPre = true
       }
+      // 关键指令的解析
       if (inVPre) {
         processRawAttrs(element)
       } else if (!element.processed) {
         // structural directives
+        // 结构性指令，如v-for v-if v-once
         processFor(element)
         processIf(element)
         processOnce(element)
@@ -296,7 +302,7 @@ export function parse (
         closeElement(element)
       }
     },
-
+    // 遇到结束标签执行end
     end (tag, start, end) {
       const element = stack[stack.length - 1]
       // pop stack
@@ -307,7 +313,7 @@ export function parse (
       }
       closeElement(element)
     },
-
+    // 遇到文本节点执行chars
     chars (text: string, start: number, end: number) {
       if (!currentParent) {
         if (process.env.NODE_ENV !== 'production') {
@@ -379,6 +385,7 @@ export function parse (
         }
       }
     },
+    // 遇到注释节点执行comment
     comment (text: string, start, end) {
       // adding anyting as a sibling to the root node is forbidden
       // comments should still be allowed, but ignored
