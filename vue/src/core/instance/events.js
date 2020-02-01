@@ -23,7 +23,7 @@ export function initEvents (vm: Component) {
   // 是否有钩子事件设为false
   vm._hasHookEvent = false
   // init parent attached events
-  // 初始化获取父级的事件
+  // 自定义组件中真正做事件监听的是事件派发者自已，也就是子组件
   const listeners = vm.$options._parentListeners
   if (listeners) {
     // 事件谁派发，谁监听。即谁$emit，就谁$on 例如简化版组件监听 <comp @update="" />
@@ -67,7 +67,8 @@ export function eventsMixin (Vue: Class<Component>) {
   // 钩子事件的正则匹配
   const hookRE = /^hook:/
   // 参考文档: https://cn.vuejs.org/v2/api/#vm-on-event-callback
-  // **监听当前实例上的自定义事件。事件可以由vm.$emit触发。回调函数会接收所有传入事件触发函数的额外参数。
+  // 监听当前实例上的自定义事件。事件可以由vm.$emit触发。回调函数会接收所有传入事件触发函数的额外参数。
+  // $on(['evt1', 'evt2'], cb1) 和 $on(['evt1'], cb2) ，事件和回调是 n:n关系
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
     // event是数组则递归调用$on
@@ -76,12 +77,12 @@ export function eventsMixin (Vue: Class<Component>) {
         vm.$on(event[i], fn)
       }
     } else {
-      // 实例上注册的事件每一个都是一个数组
+      // 实例上注册的事件每一个都是一个数组，把事件名称和回调函数存入vm._events
       (vm._events[event] || (vm._events[event] = [])).push(fn)
 
-      // 判断当前事件是否是钩子事件，是钩子事件则设置实例的_hasHookEvent属性为true
       // optimize hook:event cost by using a boolean flag marked at registration
       // instead of a hash lookup
+      // 若存在hook事件则添加标记
       if (hookRE.test(event)) {
         // 如果是 event 字符串中有 hook:，修改 vm._hasHookEvent 的状态。如果 _hasHookEvent 为 true
         // 那么在触发各类生命周期钩子的时候会触发如 hook:created 事件
@@ -95,7 +96,7 @@ export function eventsMixin (Vue: Class<Component>) {
   // 更改了事件句柄，在原句柄执行前先执行off方法解绑事件
   Vue.prototype.$once = function (event: string, fn: Function): Component {
     const vm: Component = this
-    // 定义一个 $on 事件监听，回调函数中使用 $off 方法取消事件监听，并执行回调函数
+    // 高阶函数，仅执行一次回调fn就立刻解除监听
     function on () {
       vm.$off(event, on)
       fn.apply(vm, arguments)
@@ -108,22 +109,22 @@ export function eventsMixin (Vue: Class<Component>) {
   // $off解绑事件
   Vue.prototype.$off = function (event?: string | Array<string>, fn?: Function): Component {
     const vm: Component = this
-    // vm.off() 可以解绑当前实例所有的事件
     // all
+    // 无参数：清除所有事件监听
     if (!arguments.length) {
       vm._events = Object.create(null)
       return vm
     }
-    // events为数组，同时解绑多个事件, 递归调用
     // array of events
+    // events为数组，同时解绑多个事件, 递归调用
     if (Array.isArray(event)) {
       for (let i = 0, l = event.length; i < l; i++) {
         vm.$off(event[i], fn)
       }
       return vm
     }
-    // 若事件句柄为null, 说明已经解绑，不执行任何操作
     // specific event
+    // 解除特定事件，某个具体事件名称句柄
     const cbs = vm._events[event]
     // 没有这个监听事件，直接返回vm
     if (!cbs) {

@@ -443,7 +443,10 @@ export function callHook (vm: Component, hook: string) {
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }
   }
-  // 如果有钩子事件则执行钩子事件
+  // 在Vue当中，hooks可以作为一种event，在Vue的源码当中，称之为hookEvent。
+  // 场景:有一个来自第三方的复杂表格组件，表格进行数据更新的时候渲染时间需要1s，由于渲染时间较 长，为了更好的用户体验，我希望在表格进行更新时显示一个loading动画。修改源码这个方案很不优雅。
+  // <Table @hook:updated="handleTableUpdated"></Table>
+  // 如果标记了钩子事件，则额外派发一个自定义事件出去
   if (vm._hasHookEvent) {
     vm.$emit('hook:' + hook)
   }
