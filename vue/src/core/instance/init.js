@@ -71,7 +71,9 @@ export function initMixin (Vue: Class<Component>) {
     initRender(vm) // 初始化render函数 $slots, $scopedSlots, _c(), $createElement()
     // **在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
     callHook(vm, 'beforeCreate')  // 调用beforeCreate生命周期钩子
-    // 依赖注入
+    // 依赖注入，注入的数据不是响应式，为什么先注入再提供？
+    // 1.来自祖辈的参数需要做一些代理，挂载到当前的实例上。先注入和后面的state进行排重，防止污染
+    // 2.上边注入的数据，可能转化一下格式还需要提供给别人
     // 参考文档: https://cn.vuejs.org/v2/api/#provide-inject
     // 主要给插件和组件库使用
     initInjections(vm) // resolve injections before data/props 获取注入数据

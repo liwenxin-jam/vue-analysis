@@ -57,6 +57,8 @@ export function initLifecycle (vm: Component) {
   }
 
   // 设置$parent
+  // 创建组件的顺序是自上而下，先有父，再有子
+  // 挂载mounted，生命周期是自下而上，先执行子组件的，再执行父组件的
   vm.$parent = parent
 
   // $root设为最外层的vm对象实例

@@ -42,6 +42,7 @@ export class Observer {
 
   constructor (value: any) {
     this.value = value
+    // 为什么在Observer里面声明dep? 给$set使用，当嵌套属性需要通知更新
     // object里面新增或者删除属性
     // arrary有操作新元素的变更方法 例如 push unshift splice等
     // 需要借助dep去通知响应式数据更新，例如使用$set
