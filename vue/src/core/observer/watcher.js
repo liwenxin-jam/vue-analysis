@@ -205,6 +205,8 @@ export default class Watcher {
    * Scheduler job interface.
    * Will be called by the scheduler.
    */
+  // 异步刷新队列，更新数据，核心是这里。
+  // watcher.run()=>componentUpdate()=>render()=>update()=>patch()
   run () {
     // 销毁 组件时，先把 active 置为 false
     if (this.active) {

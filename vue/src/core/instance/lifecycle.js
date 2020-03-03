@@ -102,7 +102,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // 对比更新，初次渲染会走到 vm.__patch__ 方法中，这个方法就是比对虚拟 DOM ，局部更新 DOM 的方法
     if (!prevVnode) {
       // initial render
-      // 初始化渲染 第一次渲染是真实的dom vm.$el
+      // 初始化渲染 第一次渲染是真实的dom vm.$el，先通过父级body追加真实dom，再删除原来的宿主元素
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // updates diff算法
@@ -265,7 +265,7 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
-    // 设置更新组件函数
+    // 设置更新组件函数，用户$mount()时，定义updateComponent
     updateComponent = () => {
       // vm._render() 拿到最新的虚拟VNode
       // update 进行具体的patch操作，把虚拟dom转成真实dom

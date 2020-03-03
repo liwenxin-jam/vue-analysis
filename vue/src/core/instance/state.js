@@ -479,7 +479,7 @@ export function stateMixin (Vue: Class<Component>) {
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 
-  // 回调函数 cb 是一个对象，那么返回并执行 createWatcher 函数
+  // 根据cb的类型去区别，一种是function方法，一种是object对象
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,
@@ -494,8 +494,8 @@ export function stateMixin (Vue: Class<Component>) {
     }
     options = options || {}
 
-    // options.watch和$watch时，options.user=true
-    // computed的watcher实例options.user=false
+    // 用户相关的，options.watch和$watch时，options.user=true
+    // 组件相关的，即组件的watcher，options.user=false
     options.user = true
     // 创建一个watcher, 参数: vm实例，key, 回调函数,options
     const watcher = new Watcher(vm, expOrFn, cb, options)

@@ -269,7 +269,7 @@ export function createPatchFunction (backend) {
   // 这里的createComponent是把前面的那个执行的结果vnode转换为真实dom
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     // 获取管理钩子函数，首先拿到data
-    let i = vnode.data
+    let i = vnode.dat
     // 判断 data 是否存在
     if (isDef(i)) {
       // keepAlive相关
@@ -508,7 +508,7 @@ export function createPatchFunction (backend) {
       checkDuplicateKeys(newCh)
     }
 
-    // 进行循环遍历，遍历条件为 oldStartIdx <= oldEndIdx 和 newStartIdx <= newEndIdx
+    // 进行循环遍历，遍历条件为 oldStartIdx <= oldEndIdx 和 newStartIdx <= newEndIdx 开始索引不能大于结束索引
     // 在遍历过程中，oldStartIdx 和 newStartIdx 递增，oldEndIdx 和 newEndIdx 递减。当条件不符合跳出遍历循环
     // 如果 oldStartVnode 和 newStartVnode 相似，执行 patch
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
@@ -624,6 +624,12 @@ export function createPatchFunction (backend) {
   }
 
   // diff算法，比对并局部更新 DOM 以达到性能优化的目的
+  // 比较两个虚拟dom，包括三种类型操作：属性更新、文本更新、子节点更新
+  // 具体规则如下:
+  // 1. 新老节点均有children子节点，则对子节点进行diff操作，调用updateChildren
+  // 2. 如果老节点没有子节点而新节点有子节点，先清空老节点的文本内容，然后为其新增子节点。
+  // 3. 当新节点没有子节点而老节点有子节点的时候，则移除该节点的所有子节点。
+  // 4. 当新老节点都无子节点的时候，只是文本的替换。
   function patchVnode (
     oldVnode,
     vnode,
@@ -849,6 +855,7 @@ export function createPatchFunction (backend) {
   // 代码中的关键在于 【 createElm 】 和 【 patchVnode 】 方法
   // createElm 方法，这个方法创建了真实 DOM 元素。
   // patchVnode 方法，这个方法是为了比对并局部更新 DOM 以达到性能优化的目的
+  // 为什么返回patch，主要是为了实现跨平台
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
     // 1.如果 vnode 不存在但是 oldVnode 存在，说明意图是要销毁老节点，那么就调用 invokeDestroyHook(oldVnode) 来进行销毁
     if (isUndef(vnode)) {
@@ -873,6 +880,7 @@ export function createPatchFunction (backend) {
       // DOM 的 nodeType http://www.w3school.com.cn/jsref/prop_node_nodetype.asp
       const isRealElement = isDef(oldVnode.nodeType)
       // 是不是一个真实dom，如果传入的是真实节点，则是初始化操作
+      // 不是真实dom，说明是更新操作，patchVnode对比虚拟dom，diff算法打补丁
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
         // 3.当前 VNode 和老 VNode 都存在时，执行更新操作，根据diff算法
@@ -884,7 +892,8 @@ export function createPatchFunction (backend) {
         // 4. 当新老节点都无子节点的时候，只是文本的替换。
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
-        // 如果oldVnode是真实dom节点，初始化过程
+        // 第一次渲染组件走这里，初始化过程
+        // 如果oldVnode是真实dom节点
         if (isRealElement) {
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
