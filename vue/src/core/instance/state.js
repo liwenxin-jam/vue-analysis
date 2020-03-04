@@ -494,7 +494,7 @@ export function stateMixin (Vue: Class<Component>) {
     }
     options = options || {}
 
-    // 用户相关的，options.watch和$watch时，options.user=true
+    // 用户相关的，options.watch和$watch时，如computed的watch，options.user=true
     // 组件相关的，即组件的watcher，options.user=false
     options.user = true
     // 创建一个watcher, 参数: vm实例，key, 回调函数,options

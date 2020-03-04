@@ -201,8 +201,10 @@ export function parse (
     }
   }
 
-  // 核心代码：解析HTML
-  // <div id="demo"></div>
+  // 核心代码：解析HTML，通过stack数组保存入栈出栈的操作
+  // <div id="demo">
+  //  <p></p>
+  // </div>
   parseHTML(template, {
     warn,
     expectHTML: options.expectHTML,

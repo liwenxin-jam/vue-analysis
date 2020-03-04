@@ -243,7 +243,7 @@ export function createComponentInstanceForVnode (
   return new vnode.componentOptions.Ctor(options)
 }
 
-// 安装组件勾子
+// 合并操作：用户也可能传递钩子，所以会整合
 function installComponentHooks (data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
   // 遍历 hooksToMerge
