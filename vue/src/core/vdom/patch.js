@@ -100,6 +100,7 @@ export function createPatchFunction (backend) {
     for (j = 0; j < modules.length; ++j) {
       // 通过isDef方法判断modules是否定义了hooks里的钩子函数，有则push进 cbs[hooks[i]]
       if (isDef(modules[j][hooks[i]])) {
+        // cbs['create'] = [attrFn, classFn]
         cbs[hooks[i]].push(modules[j][hooks[i]])
       }
     }
