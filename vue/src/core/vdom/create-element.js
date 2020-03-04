@@ -149,7 +149,7 @@ export function _createElement(
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
       // resolveAsset 获取组件构造函数，context是组件实例，vm.$options.components.comp
       // component
-      // 自定义组件，获取自定义组件虚拟dom
+      // 自定义组件，第一次调用createComponent是为了获取自定义组件虚拟dom，调用的是create-components.js
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // unknown or unlisted namespaced elements

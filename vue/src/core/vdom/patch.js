@@ -267,7 +267,7 @@ export function createPatchFunction (backend) {
     }
   }
 
-  // 这里的createComponent是把前面的那个执行的结果vnode转换为真实dom
+  // 第二次调用createComponent，是把前面的create-element那个执行createComponent的结果vnode转换为真实dom
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     // 获取管理钩子函数，首先拿到data
     let i = vnode.dat

@@ -57,6 +57,7 @@ export function updateComponentListeners (
   listeners: Object,
   oldListeners: ?Object
 ) {
+  // 类似dep依赖收集，把当前实例赋值给targe，事件绑定完清空掉
   target = vm
   updateListeners(listeners, oldListeners || {}, add, remove, createOnceHandler, vm)
   target = undefined
